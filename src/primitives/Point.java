@@ -23,9 +23,6 @@ public class Point {
         return "Point {" + xyz+"}";
     }
 
-    public Vector substract(Point p)
-    {
 
-    }
 
 }
