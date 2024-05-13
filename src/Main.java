@@ -5,6 +5,12 @@ import static primitives.Util.isZero;
 import primitives.*;
 
 /**
+ * Lea Berdugo 341032068 lberdugo@g.jct.ac.il
+ * Hannah Azoulay 209861400 hannahmi@g.jct.ac.il
+ *
+ */
+
+/**
  * Test program for the 1st stage
  * @author Dan Zilberstein
  */
