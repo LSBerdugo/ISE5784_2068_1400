@@ -1,6 +1,7 @@
 package primitives;
 
 public class Point {
+    public static final Point ZERO =new Point(0,0,0) ;
     protected Double3 xyz;
     public Point(double x,double y,double z)
     {
@@ -23,7 +24,7 @@ public class Point {
         return "Point {" + xyz+"}";
     }
 
-  public Vector substract(Point p1)
+  public Vector subtract(Point p1)
   {
       return new Vector(xyz.subtract(p1.xyz));
   }

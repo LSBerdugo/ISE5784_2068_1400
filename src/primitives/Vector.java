@@ -39,14 +39,14 @@ public class Vector extends Point {
         return  new  Vector(xyz.scale(d));
     }
 
-    public Vector dotProduct(Vector v)
+    public double dotProduct(Vector v)
     {
-        return new Vector(xyz.d1*v.xyz.d1,xyz.d2*v.xyz.d2,xyz.d3*v.xyz.d3);
+        return xyz.d1*v.xyz.d1+xyz.d2*v.xyz.d2+xyz.d3*v.xyz.d3;
     }
 
     public Vector crossProduct(Vector v)
     {
-        return new Vector(xyz.d2*v.xyz.d3-xyz.d3*v.xyz.d2,xyz.d1*v.xyz.d3-xyz.d3*v.xyz.d1,xyz.d1*v.xyz.d2-xyz.d2*v.xyz.d1);
+        return new Vector(xyz.d2*v.xyz.d3-xyz.d3*v.xyz.d2,-(xyz.d1*v.xyz.d3-xyz.d3*v.xyz.d1),xyz.d1*v.xyz.d2-xyz.d2*v.xyz.d1);
 
     }
 
