@@ -15,6 +15,22 @@ public class Ray {
     private Vector direction;
 
     /**
+     * Returns the starting point of the ray.
+     * @return
+     */
+    public Point getHead(){
+        return head;
+    }
+
+    /**
+     * Returns the direction vector of the ray.
+     * @return
+     */
+    public Vector getDirection(){
+        return direction;
+    }
+
+    /**
      * Constructs a new Ray with the specified starting point and direction vector.
      *
      * @param p The starting point of the ray.

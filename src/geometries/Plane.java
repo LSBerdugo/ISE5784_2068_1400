@@ -42,6 +42,7 @@ public class Plane implements Geometry {
         normal = v.normalize();
     }
 
+
     /**
      * Computes the normal vector at a given point on the surface of the plane.
      *

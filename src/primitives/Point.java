@@ -30,7 +30,7 @@ public class Point {
      *
      * @param abc The coordinates of the point in Double3 format.
      */
-    public Point(Double3 abc) {
+    Point(Double3 abc) {
         xyz = abc;
     }
 

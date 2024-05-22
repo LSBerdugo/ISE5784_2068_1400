@@ -1,5 +1,7 @@
 package primitives;
 
+import static primitives.Util.isZero;
+
 /**
  * Represents a vector in three-dimensional space.
  */
@@ -13,7 +15,7 @@ public class Vector extends Point {
      * @throws IllegalArgumentException If the vector has zero magnitude (0,0,0).
      */
     public Vector(double x, double y, double z) {
-        super(x, y, z);
+        this(new Double3(x, y, z));
         if (this.xyz.equals(Double3.ZERO))
             throw new IllegalArgumentException("Vector (0,0,0) is not valid");
     }
@@ -24,7 +26,7 @@ public class Vector extends Point {
      * @param xyz The coordinates of the vector in Double3 format.
      * @throws IllegalArgumentException If the vector has zero magnitude (0,0,0).
      */
-    public Vector(Double3 xyz) {
+    Vector(Double3 xyz) {
         super(xyz);
         if (this.xyz.equals(Double3.ZERO))
             throw new IllegalArgumentException("Vector (0,0,0) is not valid");
@@ -70,6 +72,8 @@ public class Vector extends Point {
      * @return The scaled Vector.
      */
     public Vector scale(double d) {
+        if(isZero(d))
+throw new IllegalArgumentException("Cannot scale Vector by 0");
         return new Vector(xyz.scale(d));
     }
 
@@ -123,9 +127,9 @@ public class Vector extends Point {
      */
     public Vector normalize() {
         double length = length();
-        if (length == 0)
+        if (isZero(length))
             throw new ArithmeticException("Cannot normalize Vector(0,0,0)");
-        return new Vector(xyz.scale(1 / length));
+        return new Vector(xyz.scale(1d / length));
     }
 }
 
