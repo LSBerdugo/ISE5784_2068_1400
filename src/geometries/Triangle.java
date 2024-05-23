@@ -5,6 +5,7 @@ package geometries;
  * A triangle is a polygon with three edges and three vertices.
  * It extends the Polygon class.
  */
-public class Triangle extends Polygon {
+public class Triangle extends Polygon
+{
 }
 
