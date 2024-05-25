@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class CylinderTests {
 
+    Point p1=new Point(2,2,2);
     Point p = new Point(0, 0, 2);
     Point p0 = new Point(0, 0, 0);
     Vector v = new Vector(0, 0, 1);
@@ -77,6 +78,7 @@ public class CylinderTests {
     void testGetNormal4() {
         assertEquals(v, c.getNormal(new Point(0, 0, 0)),
                 "ERROR: Failed to compute normal of the center point of the bottom base of the cylinder.");
+
     }
 
     /**
