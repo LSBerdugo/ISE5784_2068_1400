@@ -27,17 +27,34 @@ public class Tube extends RadialGeometry {
     }
 
     /**
-     * Computes the normal vector at a given point on the surface of the tube.
-     * Currently, this method returns null because it's not implemented.
+     * Computes the normal vector to the surface of the tube at a given point.
      *
-     * @param p The point on the surface of the tube (unused).
-     * @return The normal vector at the given point (currently null).
+     * @param p the point on the surface of the tube
+     * @return the normal vector at the given point
+     *
+     * This method calculates the normal vector at a given point on the surface of a tube.
+     * The normal vector is computed by projecting the point onto the tube's axis and
+     * then determining the vector from this projected point to the given point.
+     * The resulting vector is then normalized to get a unit normal vector.
+     *
+     * <p>Steps to compute the normal vector:</p>
+     * <ul>
+     *     <li>Calculate the projection of the vector from the tube's base to the point {@code p} onto the tube's axis.</li>
+     *     <li>Determine the point o on the tube's axis closest to the point p.</li>
+     *     <li>Compute the vector from point o to point p.</li>
+     *     <li>Normalize this vector to get the unit normal vector.</li>
+     * </ul>
      */
     @Override
-    public Vector getNormal(Point p)
-    {
+    public Vector getNormal(Point p) {
+        // Project the vector v onto the axis
         double t = axis.getDirection().dotProduct(p.subtract(axis.getHead()));
-        Point o=axis.getHead().add(axis.getDirection().scale(t));
+
+        // The point on the axis closest to the point p
+        Point o = axis.getHead().add(axis.getDirection().scale(t));
+
+        // Return the normalized normal vector from point o to point p
         return p.subtract(o).normalize();
     }
+
 }
