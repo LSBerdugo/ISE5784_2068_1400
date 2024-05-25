@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class CylinderTests {
 
-    Point p1=new Point(2,2,2);
+
     Point p = new Point(0, 0, 2);
     Point p0 = new Point(0, 0, 0);
     Vector v = new Vector(0, 0, 1);
