@@ -6,6 +6,7 @@ import primitives.Vector;
 
 import java.util.List;
 
+import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 /**
@@ -97,6 +98,25 @@ public class Plane implements Geometry {
     }
 
 
-    List<Point> findIntersections(Ray ray){return null;}
+    public List<Point> findIntersections(Ray ray)
+    {
+        if(ray.getHead().equals(q))
+            return null;
+        if(ray.getHead().subtract(q).dotProduct(normal)==0)
+            return null;
+        Vector v1=q.subtract(ray.getHead());
+        double nQMinusP0=normal.dotProduct(v1);
+        double nv=normal.dotProduct(ray.getDirection());
+        if(isZero(nv))
+            return null;
+        double t=alignZero(nQMinusP0/nv);
+        if(t<=0)
+          return null;
+        Point p=ray.getHead().add(ray.getDirection().scale(t));
+        double check=(p.subtract(q)).dotProduct(normal);
+        if(isZero(check))
+           return List.of(p);
+        else return null;
+    }
 
 }

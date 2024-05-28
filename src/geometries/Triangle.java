@@ -17,6 +17,6 @@ public class Triangle extends Polygon
       super(p1,p2,p3);
     }
 
-    List<Point> findIntersections(Ray ray){return null;}
+   public List<Point> findIntersections(Ray ray){return null;}
 }
 

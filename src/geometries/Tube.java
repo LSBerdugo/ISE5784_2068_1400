@@ -4,6 +4,8 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.List;
+
 /**
  * Represents a tube in three-dimensional space.
  * A tube is a cylindrical surface extending infinitely along its axis.
@@ -56,5 +58,8 @@ public class Tube extends RadialGeometry {
         // Return the normalized normal vector from point o to point p
         return p.subtract(o).normalize();
     }
+
+    @Override
+   public  List<Point> findIntersections(Ray ray){return null;}
 
 }

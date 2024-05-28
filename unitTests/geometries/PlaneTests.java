@@ -141,45 +141,72 @@ public class PlaneTests {
         testFindIntersections9();
     }
 
+    Plane plane = new Plane(new Point(1,1,2),new Vector(-1,1,1));
     // ============================ Equivalence Partitions Tests ================================
 
 
     @Test
-    void testFindIntersections1() {
-      throw null;
+    void testFindIntersections1()
+    {
+        Ray r=new Ray(new Point(2,-1,1),new Vector(0,5,-1));
+        final var result = plane.findIntersections(r)
+                .stream().toList();
+        assertEquals(1,result.size(),"ERROR:Ray intersects the plane");
+
     }
 
 
     @Test
-    void testFindIntersections2() {
-     throw null;
+    void testFindIntersections2()
+    {
+        Ray r=new Ray(new Point(2,-1,1),new Vector(1,3,-100));
+        assertNull(plane.findIntersections(r),"ERROR:Ray does not intersects the plane");
     }
 
 
 
     // ============================= Boundary Value Tests =================================
+    @Test
     void testFindIntersections3(){
-        throw null;
+        Ray r=new Ray(new Point(0,2,0),new Vector(1,1,0));
+        assertNull(plane.findIntersections(r),"ERROR:Ray is parallel to the plane and included in the plane");
     }
-
-    void testFindIntersections4(){
-        throw null;
+    @Test
+    void testFindIntersections4()
+    {
+        Ray r=new Ray(new Point(-2,2,2),new Vector(1,1,0));
+        assertNull(plane.findIntersections(r),"ERROR:Ray is parallel in the plane");
     }
-
+    @Test
     void testFindIntersections5(){
-        throw null;
+        Ray r=new Ray(new Point(-2,2,2),new Vector(-1,1,1));
+        assertNull(plane.findIntersections(r),"ERROR:Ray is orthogonal and not in direction of the plane");
     }
+    @Test
     void testFindIntersections6(){
-        throw null;
+        Ray r=new Ray(new Point(2,4,0),new Vector(-1,1,1));
+        assertNull(plane.findIntersections(r),"ERROR:Ray is orthogonal and start in the plane ");
     }
+    @Test
     void testFindIntersections7(){
-        throw null;
+
+            Ray r=new Ray(new Point(2,-1,1),new Vector(-1,1,1));
+            assertNull(plane.findIntersections(r),"ERROR:Ray is orthogonal and not in direction of the plane");
+
     }
-    void testFindIntersections8(){
-        throw null;
+    @Test
+    void testFindIntersections8()
+    {
+        Ray r=new Ray(new Point(1,1,2),new Vector(-4,-2,2));
+        assertNull(plane.findIntersections(r),"ERROR:Ray not orthogonal or parallel and begins in the reference point on the plan");
+
     }
-    void testFindIntersections9(){
-        throw null;
+    @Test
+    void testFindIntersections9()
+    {
+        Ray r=new Ray(new Point(2,4,0),new Vector(-4,-2,2));
+        assertNull(plane.findIntersections(r),"ERROR:Ray not orthogonal or parallel and begins in the plane");
+
     }
 
 
