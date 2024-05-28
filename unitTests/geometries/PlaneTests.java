@@ -2,8 +2,12 @@ package geometries;
 
 import org.junit.jupiter.api.Test;
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
 
+import java.util.Comparator;
+
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -121,4 +125,66 @@ public class PlaneTests {
         Point p3 = new Point(4, 0, 2);
         Vector expectedNormal = new Vector(2, 5, -1).normalize();
     }
+
+
+
+    @Test
+    void testFindIntersections() {
+        testFindIntersections1();
+        testFindIntersections2();
+        testFindIntersections3();
+        testFindIntersections4();
+        testFindIntersections5();
+        testFindIntersections6();
+        testFindIntersections7();
+        testFindIntersections8();
+        testFindIntersections9();
+    }
+
+    // ============================ Equivalence Partitions Tests ================================
+
+
+    @Test
+    void testFindIntersections1() {
+      throw null;
+    }
+
+
+    @Test
+    void testFindIntersections2() {
+     throw null;
+    }
+
+
+
+    // ============================= Boundary Value Tests =================================
+    void testFindIntersections3(){
+        throw null;
+    }
+
+    void testFindIntersections4(){
+        throw null;
+    }
+
+    void testFindIntersections5(){
+        throw null;
+    }
+    void testFindIntersections6(){
+        throw null;
+    }
+    void testFindIntersections7(){
+        throw null;
+    }
+    void testFindIntersections8(){
+        throw null;
+    }
+    void testFindIntersections9(){
+        throw null;
+    }
+
+
+
+
+
+
 }

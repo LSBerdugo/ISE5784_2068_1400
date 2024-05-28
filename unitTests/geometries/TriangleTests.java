@@ -37,4 +37,47 @@ public class TriangleTests {
         assertEquals(new Vector(2, -1, -5).normalize(), t.getNormal(p),
                 "ERROR: Failed constructing a correct Triangle");
     }
+
+    @Test
+    void testFindIntersections() {
+        testFindIntersections1();
+        testFindIntersections2();
+        testFindIntersections3();
+        testFindIntersections4();
+        testFindIntersections5();
+        testFindIntersections6();
+    }
+    // ============================ Equivalence Partitions Tests ================================
+
+
+    @Test
+    void testFindIntersections1() {
+        throw null;
+    }
+
+
+    @Test
+    void testFindIntersections2() {
+        throw null;
+    }
+    void testFindIntersections3(){
+        throw null;
+    }
+
+
+
+
+    // ============================= Boundary Value Tests =================================
+
+
+    void testFindIntersections4(){
+        throw null;
+    }
+
+    void testFindIntersections5(){
+        throw null;
+    }
+    void testFindIntersections6(){
+        throw null;
+    }
 }
