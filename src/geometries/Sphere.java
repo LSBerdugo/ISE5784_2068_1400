@@ -62,9 +62,9 @@ public class Sphere extends RadialGeometry {
         Point p1 = null;
         Point p2 = null;
         if (t1 > 0)
-            p1 = ray.getHead().add(ray.getDirection().scale(t1));
+            p1 = ray.GetPoint(t1);
         if (t2 > 0)
-            p2 = ray.getHead().add(ray.getDirection().scale(t2));
+            p2 = ray.GetPoint(t2);
         if (p1 != null && p2 != null)
             return List.of(p1, p2);
         else {

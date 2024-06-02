@@ -53,7 +53,7 @@ public class Tube extends RadialGeometry {
         double t = axis.getDirection().dotProduct(p.subtract(axis.getHead()));
 
         // The point on the axis closest to the point p
-        Point o = axis.getHead().add(axis.getDirection().scale(t));
+        Point o = axis.GetPoint(t);
 
         // Return the normalized normal vector from point o to point p
         return p.subtract(o).normalize();

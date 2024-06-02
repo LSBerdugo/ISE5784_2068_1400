@@ -1,4 +1,7 @@
 package primitives;
+import primitives.Util;
+
+import static primitives.Util.isZero;
 
 /**
  * Represents a ray in three-dimensional space.
@@ -63,5 +66,12 @@ public class Ray {
                 "  head: " + head.toString() + "\n" +
                 "  direction: " + direction.toString() + "\n" +
                 "}";
+    }
+    public Point GetPoint(double t)
+    {
+        if(isZero(t))
+            return head;
+        else return head.add(direction.scale(t));
+
     }
 }

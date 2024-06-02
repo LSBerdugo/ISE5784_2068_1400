@@ -112,7 +112,7 @@ public class Plane implements Geometry {
         double t=alignZero(nQMinusP0/nv);
         if(t<=0)
           return null;
-        Point p=ray.getHead().add(ray.getDirection().scale(t));
+        Point p=ray.GetPoint(t);
 
         double check=(p.subtract(q)).dotProduct(normal);
         if(isZero(check))

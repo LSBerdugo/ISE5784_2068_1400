@@ -66,7 +66,7 @@ public class Cylinder extends Tube {
         double t = axis.getDirection().dotProduct(v);
 
         // The point on the axis closest to the point p
-        Point o = axis.getHead().add(axis.getDirection().scale(t));
+        Point o = axis.GetPoint(t);
 
         // The vector from point o to point p
         Vector n = p.subtract(o);
