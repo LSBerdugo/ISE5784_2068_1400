@@ -2,6 +2,7 @@ package geometries;
 
 import org.junit.jupiter.api.Test;
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,21 +48,32 @@ public class TriangleTests {
         testFindIntersections5();
         testFindIntersections6();
     }
+
+    final Triangle triangle=new Triangle(new Point(0,0,3),new Point(0,-5,0),new Point(0,5,0));
+
     // ============================ Equivalence Partitions Tests ================================
 
 
     @Test
     void testFindIntersections1() {
-        throw null;
+
+        Ray r=new Ray(new Point(-4,0,2),new Vector(8,0,0));
+        final var result = triangle.findIntersections(r).stream().toList();
+        assertEquals(1,result.size(),"ERROR:Ray intersects the triangle");
     }
 
 
     @Test
-    void testFindIntersections2() {
-        throw null;
+      void testFindIntersections2() {
+        Ray r=new Ray(new Point(2,0,1),new Vector(-2,0,3));
+
+        assertNull( triangle.findIntersections(r),"ERROR:Ray does not intersects the triangle");
     }
+
+    @Test
     void testFindIntersections3(){
-        throw null;
+        Ray r=new Ray(new Point(2,0,1),new Vector(-2,0,-2));
+        assertNull( triangle.findIntersections(r),"ERROR:Ray does not intersects the triangle");
     }
 
 
@@ -69,15 +81,23 @@ public class TriangleTests {
 
     // ============================= Boundary Value Tests =================================
 
-
+    @Test
     void testFindIntersections4(){
-        throw null;
+        Ray r=new Ray(new Point(3,-3,0),new Vector(-3,-2,6));
+        assertNull( triangle.findIntersections(r),"ERROR:Ray does not intersects the triangle");
     }
 
+    @Test
     void testFindIntersections5(){
-        throw null;
+
+        Ray r=new Ray(new Point(3,-3,0),new Vector(-3,8,0));
+        assertNull( triangle.findIntersections(r),"ERROR:Ray does not intersects the triangle");
+
     }
+
+    @Test
     void testFindIntersections6(){
-        throw null;
+        Ray r=new Ray(new Point(0,-1,0),new Vector(-3,2,0));
+        assertNull( triangle.findIntersections(r),"ERROR:Ray does not intersects the triangle");
     }
 }

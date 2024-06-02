@@ -113,6 +113,7 @@ public class Plane implements Geometry {
         if(t<=0)
           return null;
         Point p=ray.getHead().add(ray.getDirection().scale(t));
+
         double check=(p.subtract(q)).dotProduct(normal);
         if(isZero(check))
            return List.of(p);
