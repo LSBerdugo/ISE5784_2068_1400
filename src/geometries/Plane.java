@@ -98,26 +98,62 @@ public class Plane implements Geometry {
     }
 
 
-    public List<Point> findIntersections(Ray ray)
-    {
-        if(ray.getHead().equals(q))
-            return null;
-        if(ray.getHead().subtract(q).dotProduct(normal)==0)
-            return null;
-        Vector v1=q.subtract(ray.getHead());
-        double nQMinusP0=normal.dotProduct(v1);
-        double nv=normal.dotProduct(ray.getDirection());
-        if(isZero(nv))
-            return null;
-        double t=alignZero(nQMinusP0/nv);
-        if(t<=0)
-          return null;
-        Point p=ray.GetPoint(t);
+  import java.util.List;
 
-        double check=(p.subtract(q)).dotProduct(normal);
-        if(isZero(check))
-           return List.of(p);
-        else return null;
+    /**
+     * Finds all intersection points between the given ray and this geometric object.
+     * The method calculates the intersection of the ray with a plane (or similar surface)
+     * defined by the geometric object. It uses several geometric checks to determine
+     * whether an intersection exists and, if so, where it occurs.
+     *
+     * @param ray the ray to intersect with the object
+     * @return a list containing the intersection point if it exists, or null if there is no intersection
+     */
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        // Check if the ray's head is at the point 'q'
+        if (ray.getHead().equals(q)) {
+            return null;
+        }
+
+        // Check if the ray's head and 'q' are on the same plane orthogonal to the normal
+        if (ray.getHead().subtract(q).dotProduct(normal) == 0) {
+            return null;
+        }
+
+        // Calculate the vector from the ray's head to 'q'
+        Vector v1 = q.subtract(ray.getHead());
+
+        // Calculate the dot product of the normal with the vector v1
+        double nQMinusP0 = normal.dotProduct(v1);
+
+        // Calculate the dot product of the normal with the ray's direction
+        double nv = normal.dotProduct(ray.getDirection());
+
+        // Check if the ray is parallel to the plane (i.e., no intersection)
+        if (isZero(nv)) {
+            return null;
+        }
+
+        // Calculate the intersection parameter t
+        double t = alignZero(nQMinusP0 / nv);
+
+        // If t is less than or equal to zero, the intersection is behind the ray's origin
+        if (t <= 0) {
+            return null;
+        }
+
+        // Calculate the intersection point
+        Point p = ray.GetPoint(t);
+
+        // Verify the intersection point lies on the plane
+        double check = (p.subtract(q)).dotProduct(normal);
+        if (isZero(check)) {
+            return List.of(p);
+        } else {
+            return null;
+        }
     }
+
 
 }

@@ -47,37 +47,66 @@ public class Sphere extends RadialGeometry {
         return (p.subtract(center)).normalize();
     }
 
-    public List<Point> findIntersections(Ray ray)
-    {
-        if(ray.getHead().equals(center))
-           return List.of(center.add(ray.getDirection().scale(radius)));
-        Vector u = center.subtract(ray.getHead());
-        double tm = ray.getDirection().dotProduct(u);
-        double d = Math.sqrt(u.lengthSquared() - tm * tm);
-        if (d >= radius)
-            return null;
-        double th = Math.sqrt(radius * radius - d * d);
-        double t1 = tm + th;
-        double t2 = tm - th;
-        Point p1 = null;
-        Point p2 = null;
-        if (t1 > 0)
-            p1 = ray.GetPoint(t1);
-        if (t2 > 0)
-            p2 = ray.GetPoint(t2);
-        if (p1 != null && p2 != null)
-            return List.of(p1, p2);
-        else {
-            if (p1 != null)
-                return List.of(p1);
-            else if (p2 != null)
-                return List.of(p2);
-            else
-                return null;
+
+
+    /**
+     * Finds all intersection points between the given ray and this sphere.
+     * The method calculates the intersections of the ray with the sphere and
+     * returns the intersection points.
+     *
+     * @param ray the ray to intersect with the sphere
+     * @return a list of intersection points, or null if there are no intersections
+     */
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        // If the ray's head is at the center of the sphere, return the point on the surface in the direction of the ray
+        if (ray.getHead().equals(center)) {
+            return List.of(center.add(ray.getDirection().scale(radius)));
         }
 
+        // Calculate the vector from the ray's head to the center of the sphere
+        Vector u = center.subtract(ray.getHead());
 
+        // Calculate the projection of vector u onto the ray's direction
+        double tm = ray.getDirection().dotProduct(u);
+
+        // Calculate the perpendicular distance from the center of the sphere to the ray
+        double d = Math.sqrt(u.lengthSquared() - tm * tm);
+
+        // If the distance is greater than or equal to the radius, there is no intersection
+        if (d >= radius) {
+            return null;
+        }
+
+        // Calculate the distance from the perpendicular point to the intersection points
+        double th = Math.sqrt(radius * radius - d * d);
+
+        // Calculate the intersection parameters t1 and t2
+        double t1 = tm + th;
+        double t2 = tm - th;
+
+        // Calculate the intersection points
+        Point p1 = null;
+        Point p2 = null;
+        if (t1 > 0) {
+            p1 = ray.GetPoint(t1);
+        }
+        if (t2 > 0) {
+            p2 = ray.GetPoint(t2);
+        }
+
+        // Return the intersection points based on which ones are valid
+        if (p1 != null && p2 != null) {
+            return List.of(p1, p2);
+        } else if (p1 != null) {
+            return List.of(p1);
+        } else if (p2 != null) {
+            return List.of(p2);
+        } else {
+            return null;
+        }
     }
+
 
 }
 
