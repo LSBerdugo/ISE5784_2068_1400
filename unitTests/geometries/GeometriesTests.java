@@ -28,7 +28,12 @@ class GeometriesTests {
     final Geometries geometries=new Geometries(plane,sphere,triangle);
     // ============================ Equivalence Partitions Tests ================================
     @Test
-    void testFindIntersections5() {
+    void testFindIntersections5()
+    {
+        Ray ray=new Ray(new Point(0,2,1.5),new Vector(1,-3,0.5));
+        final var result =geometries.findIntersections(ray)
+                .stream().toList();
+        assertEquals(3,result.size(),"ERROR:Ray not intersect the geometries");
     }
     // ============================= Boundary Value Tests =================================
     @Test
@@ -56,7 +61,7 @@ class GeometriesTests {
     @Test
     void testFindIntersections4()
     {
-        Ray ray=new Ray(new Point(0,3,0),new Vector(0,-4,2));
+        Ray ray=new Ray(new Point(0,2,0),new Vector(1,-3,2));
         final var result =geometries.findIntersections(ray)
                 .stream().toList();
         assertEquals(4,result.size(),"ERROR:Ray not intersect the geometries");
