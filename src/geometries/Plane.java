@@ -98,7 +98,6 @@ public class Plane implements Geometry {
     }
 
 
-  import java.util.List;
 
     /**
      * Finds all intersection points between the given ray and this geometric object.
