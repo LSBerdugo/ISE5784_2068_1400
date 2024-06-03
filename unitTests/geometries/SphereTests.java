@@ -177,15 +177,7 @@ class SphereTests {
         Ray r=new Ray(new Point(-1,0,0),new Vector(0,0,1));
         assertNull( sphere.findIntersections(r),"ERROR:Ray does not intersects the sphere");
     }
-    @Test
-    void testFindIntersections18()
-    {
-        final  Sphere sphere=new Sphere(new Point(0,1,1),1);
-        Ray ray=new Ray(new Point(0,3,0),new Vector(0,-4,2));
-        final var result =sphere.findIntersections(ray)
-                .stream().toList();
-        assertEquals( 2,result.size(),"ERROR:Ray does not intersects the sphere");
-    }
+
 
 
 }

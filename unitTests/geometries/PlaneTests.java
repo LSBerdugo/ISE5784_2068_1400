@@ -126,7 +126,9 @@ public class PlaneTests {
         Vector expectedNormal = new Vector(2, 5, -1).normalize();
     }
 
-
+    /**
+     * Runs all tests for the {@code findIntersections} method of the {@link Plane} class.
+     */
 
     @Test
     void testFindIntersections() {
@@ -144,7 +146,11 @@ public class PlaneTests {
     Plane plane = new Plane(new Point(1,1,2),new Vector(-1,1,1));
     // ============================ Equivalence Partitions Tests ================================
 
-
+    /**
+     * Test method for {@link Plane#findIntersections(Ray)}.
+     * Tests the case where the ray intersects the plane.
+     * <br>TC01: Ray intersects the plane
+     */
     @Test
     void testFindIntersections1()
     {
@@ -155,7 +161,11 @@ public class PlaneTests {
 
     }
 
-
+    /**
+     * Test method for {@link Plane#findIntersections(Ray)}.
+     * Tests the case where the ray does not intersect the plane.
+     * <br>TC02: Ray does not intersect the plane
+     */
     @Test
     void testFindIntersections2()
     {
@@ -166,27 +176,52 @@ public class PlaneTests {
 
 
     // ============================= Boundary Value Tests =================================
+    /**
+     * Test method for {@link Plane#findIntersections(Ray)}.
+     * Tests the case where the ray is parallel to the plane and included in the plane.
+     * <br>TC03: Ray is parallel to the plane and included in the plane
+     */
     @Test
     void testFindIntersections3(){
         Ray r=new Ray(new Point(0,2,0),new Vector(1,1,0));
         assertNull(plane.findIntersections(r),"ERROR:Ray is parallel to the plane and included in the plane");
     }
-    @Test
+/**
+ * Test method for {@link Plane#findIntersections(Ray)}.
+ * Tests the case where the ray is parallel to the plane.
+ * <br>TC04: Ray is parallel to the plane
+*/
+ @Test
     void testFindIntersections4()
     {
         Ray r=new Ray(new Point(-2,2,2),new Vector(1,1,0));
         assertNull(plane.findIntersections(r),"ERROR:Ray is parallel in the plane");
     }
+    /**
+     * Test method for {@link Plane#findIntersections(Ray)}.
+     * Tests the case where the ray is orthogonal to the plane and not in the direction of the plane.
+     * <br>TC05: Ray is orthogonal and not in the direction of the plane
+     */
     @Test
     void testFindIntersections5(){
         Ray r=new Ray(new Point(-2,2,2),new Vector(-1,1,1));
         assertNull(plane.findIntersections(r),"ERROR:Ray is orthogonal and not in direction of the plane");
     }
+    /**
+     * Test method for {@link Plane#findIntersections(Ray)}.
+     * Tests the case where the ray is orthogonal and starts in the plane.
+     * <br>TC06: Ray is orthogonal and starts in the plane
+     */
     @Test
     void testFindIntersections6(){
         Ray r=new Ray(new Point(2,4,0),new Vector(-1,1,1));
         assertNull(plane.findIntersections(r),"ERROR:Ray is orthogonal and start in the plane ");
     }
+    /**
+     * Test method for {@link Plane#findIntersections(Ray)}.
+     * Tests the case where the ray is orthogonal and not in the direction of the plane.
+     * <br>TC07: Ray is orthogonal and not in the direction of the plane
+     */
     @Test
     void testFindIntersections7(){
 
@@ -194,6 +229,11 @@ public class PlaneTests {
             assertNull(plane.findIntersections(r),"ERROR:Ray is orthogonal and not in direction of the plane");
 
     }
+    /**
+     * Test method for {@link Plane#findIntersections(Ray)}.
+     * Tests the scenario where the ray is not orthogonal or parallel to the plane and begins at a reference point on the plane.
+     * <br>TC08: Ray not orthogonal or parallel and begins in the reference point on the plane
+     */
     @Test
     void testFindIntersections8()
     {
@@ -201,6 +241,11 @@ public class PlaneTests {
         assertNull(plane.findIntersections(r),"ERROR:Ray not orthogonal or parallel and begins in the reference point on the plan");
 
     }
+    /**
+     * Test method for {@link Plane#findIntersections(Ray)}.
+     * Tests the scenario where the ray is not orthogonal or parallel to the plane and begins on the plane itself.
+     * <br>TC09: Ray not orthogonal or parallel and begins in the plane
+     */
     @Test
     void testFindIntersections9()
     {

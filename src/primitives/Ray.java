@@ -67,6 +67,16 @@ public class Ray {
                 "  direction: " + direction.toString() + "\n" +
                 "}";
     }
+    /**
+     * Computes a point along the ray at a given parameter {@code t}.
+     *
+     * @param t The parameter value along the ray.
+     * @return The point on the ray corresponding to the parameter {@code t}.
+     *
+     * @throws IllegalArgumentException if the parameter {@code t} is NaN or infinite.
+     *
+     * @implSpec If the parameter {@code t} is zero, returns the head of the ray.
+     */
     public Point GetPoint(double t)
     {
         if(isZero(t))

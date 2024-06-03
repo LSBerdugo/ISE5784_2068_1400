@@ -38,7 +38,10 @@ public class TriangleTests {
         assertEquals(new Vector(2, -1, -5).normalize(), t.getNormal(p),
                 "ERROR: Failed constructing a correct Triangle");
     }
-
+    /**
+     * Test method to run all intersection tests.
+     * Invokes individual test methods for various intersection scenarios.
+     */
     @Test
     void testFindIntersections() {
         testFindIntersections1();
@@ -53,7 +56,10 @@ public class TriangleTests {
 
     // ============================ Equivalence Partitions Tests ================================
 
-
+    /**
+     * Tests the scenario where the ray intersects the triangle.
+     * <br>TC01: Ray intersects the triangle
+     */
     @Test
     void testFindIntersections1() {
 
@@ -62,14 +68,20 @@ public class TriangleTests {
         assertEquals(1,result.size(),"ERROR:Ray intersects the triangle");
     }
 
-
+    /**
+     * Tests the scenario where the ray does not intersect the triangle.
+     * <br>TC02: Ray does not intersect the triangle
+     */
     @Test
       void testFindIntersections2() {
         Ray r=new Ray(new Point(2,0,1),new Vector(-2,0,3));
 
         assertNull( triangle.findIntersections(r),"ERROR:Ray does not intersects the triangle");
     }
-
+    /**
+     * Tests another scenario where the ray does not intersect the triangle.
+     * <br>TC03: Ray does not intersect the triangle
+     */
     @Test
     void testFindIntersections3(){
         Ray r=new Ray(new Point(2,0,1),new Vector(-2,0,-2));
@@ -80,13 +92,19 @@ public class TriangleTests {
 
 
     // ============================= Boundary Value Tests =================================
-
+    /**
+     * Tests a boundary scenario where the ray does not intersect the triangle.
+     * <br>TC04: Ray does not intersect the triangle
+     */
     @Test
     void testFindIntersections4(){
         Ray r=new Ray(new Point(3,-3,0),new Vector(-3,-2,6));
         assertNull( triangle.findIntersections(r),"ERROR:Ray does not intersects the triangle");
     }
-
+    /**
+     * Tests another boundary scenario where the ray does not intersect the triangle.
+     * <br>TC05: Ray does not intersect the triangle
+     */
     @Test
     void testFindIntersections5(){
 
@@ -95,6 +113,10 @@ public class TriangleTests {
 
     }
 
+    /**
+     * Tests a boundary scenario where the ray does not intersect the triangle.
+     * <br>TC06: Ray does not intersect the triangle
+     */
     @Test
     void testFindIntersections6(){
         Ray r=new Ray(new Point(0,-1,0),new Vector(-3,2,0));
