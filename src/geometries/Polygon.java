@@ -111,7 +111,62 @@ public class Polygon implements Geometry {
      * @return a list of intersection points, or null if there are no intersections
      */
     @Override
-    public List<Point> findIntersections(Ray ray) {
-        return null;
+    public List<Point> findIntersections(Ray ray){
+//        //find intersection for polygon
+//        List<Point> planeIntersections = plane.findIntersections(ray);
+//        if (planeIntersections == null) {
+//            return null;
+//        }
+//        Point p0 = ray.getHead();
+//        Vector v = ray.getDirection();
+//        Vector n = plane.getNormal();
+//        double t = planeIntersections.get(0).subtract(p0).dotProduct(n) / v.dotProduct(n);
+//        if (t <= 0) {
+//            return null;
+//        }
+//        Point p = p0.add(v.scale(t));
+//        Vector v1 = vertices.get(0).subtract(p).crossProduct(vertices.get(1).subtract(p)).normalize();
+//        Vector v2 = vertices.get(1).subtract(p).crossProduct(vertices.get(2).subtract(p)).normalize();
+//        Vector v3 = vertices.get(2).subtract(p).crossProduct(vertices.get(0).subtract(p)).normalize();
+//        if (v1.dotProduct(v2) > 0 && v2.dotProduct(v3) > 0 && v3.dotProduct(v1) > 0) {
+//            return List.of(p);
+//        }
+//        return null;
+        try {
+            List<Point> planeIntersections = plane.findIntersections(ray);
+            if (planeIntersections == null) {
+                return null;
+            }
+
+            Point intersectionPoint = planeIntersections.get(0);
+
+            // Check if the intersection point is inside the polygon using cross products
+            boolean isInside = true;
+            int numVertices = vertices.size();
+            for (int i = 0; i < numVertices; i++) {
+                Point currentVertex = vertices.get(i);
+                Point nextVertex = vertices.get((i + 1) % numVertices);
+                Vector edge = nextVertex.subtract(currentVertex);
+                Vector toIntersection = intersectionPoint.subtract(currentVertex);
+                Vector crossProduct = edge.crossProduct(toIntersection).normalize();
+
+                if (crossProduct.dotProduct(plane.getNormal()) < 0) {
+                    isInside = false;
+                    break;
+                }
+            }
+
+            if (isInside) {
+                return List.of(intersectionPoint);
+            }
+
+            return null;
+        }
+        catch(IllegalArgumentException e){
+            return null;
+        }
     }
+
+
+
 }

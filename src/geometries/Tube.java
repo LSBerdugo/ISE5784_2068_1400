@@ -6,6 +6,8 @@ import primitives.Vector;
 
 import java.util.List;
 
+import static primitives.Util.isZero;
+
 /**
  * Represents a tube in three-dimensional space.
  * A tube is a cylindrical surface extending infinitely along its axis.
@@ -33,7 +35,7 @@ public class Tube extends RadialGeometry {
      *
      * @param p the point on the surface of the tube
      * @return the normal vector at the given point
-     *
+     * <p>
      * This method calculates the normal vector at a given point on the surface of a tube.
      * The normal vector is computed by projecting the point onto the tube's axis and
      * then determining the vector from this projected point to the given point.
@@ -67,6 +69,51 @@ public class Tube extends RadialGeometry {
      * @return a list of intersection points, or null if there are no intersections
      */
     @Override
-   public  List<Point> findIntersections(Ray ray){return null;}
+    public List<Point> findIntersections(Ray ray) {
+        try {
+
+            //find intersection
+            Point p0 = ray.getHead();
+            Vector v = ray.getDirection();
+            Vector u = axis.getDirection();
+            Vector l = p0.subtract(axis.getHead());
+            double tm = v.dotProduct(u);
+            double t1, t2, a, b, c;
+
+            if (isZero(tm)) {
+                a = v.lengthSquared();
+                b = 2 * (v.dotProduct(l));
+                c = l.lengthSquared() - radius * radius;
+
+            } else {
+                double um = u.dotProduct(l);
+                a = v.subtract(u.scale(tm)).lengthSquared();
+                b = 2 * (v.subtract(u.scale(tm)).dotProduct(l.subtract(u.scale(um))));
+                c = l.subtract(u.scale(um)).lengthSquared() - radius * radius;
+            }
+            double discriminant = b * b - 4 * a * c;
+            if (discriminant < 0) {
+                return null;
+            }
+            t1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+            t2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+
+            if (t1 <= 0 && t2 <= 0) {
+                return null;
+            }
+            if (t1 <= 0) {
+                return List.of(ray.GetPoint(t2));
+
+            }
+            if (t2 <= 0) {
+                return List.of(ray.GetPoint(t1));
+            }
+            return List.of(ray.GetPoint(t1), ray.GetPoint(t2));
+
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+
+    }
 
 }
