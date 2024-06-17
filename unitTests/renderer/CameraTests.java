@@ -1,18 +1,18 @@
 
-//
-//package renderer;
-//import org.junit.jupiter.api.Test;
-//
-//import primitives.*;
-//
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//
-///**
-// * Testing Camera Class
-// * @author Dan
-// */
-//class CameraTests {
-//    /** Camera builder for the tests */
+
+package renderer;
+import org.junit.jupiter.api.Test;
+
+import primitives.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+/**
+ * Testing Camera Class
+ * @author Dan
+ */
+class CameraTests {
+    /** Camera builder for the tests */
 //    private final Camera.Builder cameraBuilder = Camera.getBuilder()
 //            .setRayTracer(new SimpleRayTracer(new Scene("Test")))
 //            .setImageWriter(new ImageWriter("Test", 1, 1))
@@ -60,6 +60,6 @@
 //        assertEquals(new Ray(Point.ZERO, new Vector(2, -2, -10)),
 //                camera2.constructRay(3, 3, 0, 0), badRay);
 //
-//    }
-//
-//}
+ //   }
+
+}

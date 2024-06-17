@@ -84,4 +84,6 @@ public class Ray {
         else return head.add(direction.scale(t));
 
     }
+
+
 }

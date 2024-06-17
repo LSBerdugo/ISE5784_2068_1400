@@ -6,6 +6,7 @@ import primitives.Vector;
 
 import java.util.List;
 
+import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 /**
@@ -53,7 +54,8 @@ public class Tube extends RadialGeometry {
     public Vector getNormal(Point p) {
         // Project the vector v onto the axis
         double t = axis.getDirection().dotProduct(p.subtract(axis.getHead()));
-
+        if (isZero(t))
+            throw new IllegalArgumentException("ERROR:can not scale vector by zero");
         // The point on the axis closest to the point p
         Point o = axis.GetPoint(t);
 
@@ -62,58 +64,109 @@ public class Tube extends RadialGeometry {
     }
 
 
+    public boolean isPointInsideTube(Point point) {
+        Vector u = axis.getDirection(); // Direction vector of the tube's axis
+        Point p0 = axis.getHead(); // A point on the tube's axis
+        Vector l = point.subtract(p0); // Vector from p0 to the point
+
+        // Project l onto the axis direction to get the closest point on the axis
+        double projectionLength = l.dotProduct(u);
+        Vector projection = u.scale(projectionLength);
+        Point closestPointOnAxis = p0.add(projection);
+
+        // Calculate the distance from the point to the closest point on the axis
+        double distanceSquared = point.subtract(closestPointOnAxis).lengthSquared();
+
+        // Check if the distance is less than or equal to the radius
+        return distanceSquared <= radius * radius;
+    }
+
     /**
      * Finds all intersection points between the given ray and this Tube.
      *
      * @param ray the ray to intersect with the object
      * @return a list of intersection points, or null if there are no intersections
      */
+
     @Override
+
     public List<Point> findIntersections(Ray ray) {
+        Vector vAxis = axis.getDirection();
+        Vector v = ray.getDirection();
+        Point p0 = ray.getHead();
+
+        // At^2+Bt+C=0
+        double a = 0;
+        double b = 0;
+        double c = 0;
+
+        double vVa = alignZero(v.dotProduct(vAxis));
+        Vector vVaVa;
+        Vector vMinusVVaVa;
+        if (vVa == 0) // the ray is orthogonal to the axis
+            vMinusVVaVa = v;
+        else {
+            vVaVa = vAxis.scale(vVa);
+            try {
+                vMinusVVaVa = v.subtract(vVaVa);
+            } catch (IllegalArgumentException e1) { // the rays is parallel to axis
+                return null;
+            }
+        }
+        // A = (v-(v*va)*va)^2
+        a = vMinusVVaVa.lengthSquared();
+
+        Vector deltaP = null;
         try {
+            deltaP = p0.subtract(axis.getHead());
+        } catch (IllegalArgumentException e1) { // the ray begins at axis P0
+            if (vVa == 0) // the ray is orthogonal to Axis
+                return List.of(ray.GetPoint(radius));
 
-            //find intersection
-            Point p0 = ray.getHead();
-            Vector v = ray.getDirection();
-            Vector u = axis.getDirection();
-            Vector l = p0.subtract(axis.getHead());
-            double tm = v.dotProduct(u);
-            double t1, t2, a, b, c;
-
-            if (isZero(tm)) {
-                a = v.lengthSquared();
-                b = 2 * (v.dotProduct(l));
-                c = l.lengthSquared() - radius * radius;
-
-            } else {
-                double um = u.dotProduct(l);
-                a = v.subtract(u.scale(tm)).lengthSquared();
-                b = 2 * (v.subtract(u.scale(tm)).dotProduct(l.subtract(u.scale(um))));
-                c = l.subtract(u.scale(um)).lengthSquared() - radius * radius;
-            }
-            double discriminant = b * b - 4 * a * c;
-            if (discriminant < 0) {
-                return null;
-            }
-            t1 = (-b + Math.sqrt(discriminant)) / (2 * a);
-            t2 = (-b - Math.sqrt(discriminant)) / (2 * a);
-
-            if (t1 <= 0 && t2 <= 0) {
-                return null;
-            }
-            if (t1 <= 0) {
-                return List.of(ray.GetPoint(t2));
-
-            }
-            if (t2 <= 0) {
-                return List.of(ray.GetPoint(t1));
-            }
-            return List.of(ray.GetPoint(t1), ray.GetPoint(t2));
-
-        } catch (IllegalArgumentException e) {
-            return null;
+            double t = alignZero(Math.sqrt(radius * radius / vMinusVVaVa.lengthSquared()));
+            return t == 0 ? null : List.of(ray.GetPoint(t));
         }
 
-    }
+        double dPVAxis = alignZero(deltaP.dotProduct(vAxis));
+        Vector dPVaVa;
+        Vector dPMinusdPVaVa;
+        if (dPVAxis == 0)
+            dPMinusdPVaVa = deltaP;
+        else {
+            dPVaVa = vAxis.scale(dPVAxis);
+            try {
+                dPMinusdPVaVa = deltaP.subtract(dPVaVa);
+            } catch (IllegalArgumentException e1) {
+                double t = alignZero(Math.sqrt(radius * radius / a));
+                return t == 0 ? null : List.of(ray.GetPoint(t));
+            }
+        }
 
+        // B = 2(v - (v*va)*va) * (dp - (dp*va)*va))
+        b = 2 * alignZero(vMinusVVaVa.dotProduct(dPMinusdPVaVa));
+        c = dPMinusdPVaVa.lengthSquared() - radius * radius;
+
+        // A*t^2 + B*t + C = 0 - lets resolve it
+        double discr = alignZero(b * b - 4 * a * c);
+        if (discr <= 0) return null; // the ray is outside or tangent to the tube
+
+        double doubleA = 2 * a;
+        double tm = alignZero(-b / doubleA);
+        double th = Math.sqrt(discr) / doubleA;
+        if (isZero(th)) return null; // the ray is tangent to the tube
+
+        double t1 = alignZero(tm + th);
+        if (t1 <= 0) // t1 is behind the head
+            return null; // since th must be positive (sqrt), t2 must be non-positive as t1
+
+        double t2 = alignZero(tm - th);
+
+        // if both t1 and t2 are positive
+        if (t2 > 0)
+            return List.of(ray.GetPoint(t1), ray.GetPoint(t2));
+        else // t2 is behind the head
+            return List.of(ray.GetPoint(t1));
+
+//        return null;
+    }
 }
