@@ -225,7 +225,7 @@ public class PlaneTests {
     @Test
     void testFindIntersections7(){
 
-            Ray r=new Ray(new Point(2,-1,1),new Vector(-1,1,1));
+            Ray r=new Ray(new Point(2,-1,1),new Vector(1,-1,-1));
             assertNull(plane.findIntersections(r),"ERROR:Ray is orthogonal and not in direction of the plane");
 
     }
