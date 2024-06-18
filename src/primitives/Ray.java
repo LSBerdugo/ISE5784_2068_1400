@@ -46,6 +46,14 @@ public class Ray {
         direction = v.normalize();
     }
 
+
+    /**
+     * Compares this {@code Ray} to the specified object. The result is {@code true} if and only if the argument
+     * is not {@code null} and is a {@code Ray} object that has the same head point and direction vector as this object.
+     *
+     * @param o the object to compare this {@code Ray} against.
+     * @return {@code true} if the given object represents a {@code Ray} equivalent to this ray, {@code false} otherwise.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
