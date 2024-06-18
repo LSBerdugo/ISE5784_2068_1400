@@ -7,7 +7,7 @@ public class Point {
     /**
      * Represents the origin point (0, 0, 0).
      */
-    public static final Point ZERO = new Point(0, 0, 0);
+    public static final Point ZERO = new Point(0d, 0d, 0d);
 
     /**
      * The coordinates of the point in three-dimensional space.

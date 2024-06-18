@@ -1,6 +1,8 @@
 package primitives;
 import primitives.Util;
 
+import java.util.Objects;
+
 import static primitives.Util.isZero;
 
 /**
@@ -44,17 +46,13 @@ public class Ray {
         direction = v.normalize();
     }
 
-    /**
-     * Checks if this Ray is equal to another object.
-     *
-     * @param obj The object to compare with this Ray.
-     * @return True if the objects are equal, false otherwise.
-     */
-    public boolean equal(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Ray ray)) return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Ray ray)) return false;
         return head.equals(ray.head) && direction.equals(ray.direction);
     }
+
 
     /**
      * Returns a string representation of this Ray.

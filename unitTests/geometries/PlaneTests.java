@@ -123,7 +123,9 @@ public class PlaneTests {
         Point p1 = new Point(1, 1, 1);
         Point p2 = new Point(2, 1, 3);
         Point p3 = new Point(4, 0, 2);
+        Plane plane=new Plane(p1,p2,p3);
         Vector expectedNormal = new Vector(2, 5, -1).normalize();
+        assertEquals(expectedNormal,plane.getNormal(p1),"ERROR :Not expected normal");
     }
 
     /**

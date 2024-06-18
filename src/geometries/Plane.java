@@ -31,16 +31,16 @@ public class Plane implements Geometry {
      * @param p2 the second point on the plane
      * @param p3 the third point on the plane
      * @throws IllegalArgumentException if the points are collinear or if the computed normal is not a unit vector
-     *
-     * This constructor initializes a plane using three given points. It performs the following steps:
-     * <ul>
-     *     <li>Computes two vectors from the three points: from p1 to p2, and from p1 to  p3.</li>
-     *     <li>Calculates the cross product of these vectors to get a normal vector to the plane.</li>
-     *     <li>Checks if the length of the cross product is zero, which indicates that the points are collinear. If so, it throws an {@code IllegalArgumentException}.</li>
-     *     <li>Normalizes the normal vector to ensure it is a unit vector.</li>
-     *     <li>Verifies that the length of the normalized normal vector is 1. If not, it throws an {@code IllegalArgumentException}.</li>
-     *     <li>Sets the normal vector and assigns the first point {@code p1} as a reference point on the plane.</li>
-     * </ul>
+     *                                  <p>
+     *                                  This constructor initializes a plane using three given points. It performs the following steps:
+     *                                  <ul>
+     *                                      <li>Computes two vectors from the three points: from p1 to p2, and from p1 to  p3.</li>
+     *                                      <li>Calculates the cross product of these vectors to get a normal vector to the plane.</li>
+     *                                      <li>Checks if the length of the cross product is zero, which indicates that the points are collinear. If so, it throws an {@code IllegalArgumentException}.</li>
+     *                                      <li>Normalizes the normal vector to ensure it is a unit vector.</li>
+     *                                      <li>Verifies that the length of the normalized normal vector is 1. If not, it throws an {@code IllegalArgumentException}.</li>
+     *                                      <li>Sets the normal vector and assigns the first point {@code p1} as a reference point on the plane.</li>
+     *                                  </ul>
      */
     public Plane(Point p1, Point p2, Point p3) {
         Vector v1 = p2.subtract(p1);
@@ -98,7 +98,6 @@ public class Plane implements Geometry {
     }
 
 
-
     /**
      * Finds all intersection points between the given ray and this geometric object.
      * The method calculates the intersection of the ray with a plane (or similar surface)
@@ -110,24 +109,34 @@ public class Plane implements Geometry {
      */
     @Override
     public List<Point> findIntersections(Ray ray) {
-        // Check if the ray's head is at the point 'q'
-        if (ray.getHead().equals(q)) {
-            return null;
-        }
 
-        // Check if the ray's head and 'q' are on the same plane orthogonal to the normal
-        if (ray.getHead().subtract(q).dotProduct(normal) == 0) {
+
+        // Check if the ray's head is at the point 'q'
+        Point P0 = ray.getHead();
+        Vector v = ray.getDirection();
+        if (P0.equals(q))
+        {
             return null;
         }
 
         // Calculate the vector from the ray's head to 'q'
-        Vector v1 = q.subtract(ray.getHead());
+        Vector v1 = q.subtract(P0);
 
         // Calculate the dot product of the normal with the vector v1
-        double nQMinusP0 = normal.dotProduct(v1);
+        double nQMinusP0=alignZero(v1.dotProduct(normal));
+
+        // Check if the ray's head and 'q' are on the same plane orthogonal to the normal
+        if (isZero(nQMinusP0))
+        {
+            return null;
+        }
+
+
+
+
 
         // Calculate the dot product of the normal with the ray's direction
-        double nv = normal.dotProduct(ray.getDirection());
+        double nv = alignZero(normal.dotProduct(v));
 
         // Check if the ray is parallel to the plane (i.e., no intersection)
         if (isZero(nv)) {
@@ -138,21 +147,19 @@ public class Plane implements Geometry {
         double t = alignZero(nQMinusP0 / nv);
 
         // If t is less than or equal to zero, the intersection is behind the ray's origin
-        if (t <= 0) {
+        if (t < 0) {
             return null;
         }
 
         // Calculate the intersection point
         Point p = ray.GetPoint(t);
 
-        // Verify the intersection point lies on the plane
-        double check = (p.subtract(q)).dotProduct(normal);
-        if (isZero(check)) {
-            return List.of(p);
-        } else {
-            return null;
-        }
+
+           return List.of(p);
+
     }
 
-
 }
+
+
+

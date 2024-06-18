@@ -17,8 +17,33 @@ public class Camera implements Cloneable {
     private int width = 0;
     private int height = 0;
     private ImageWriter imageWriter;
-    private RayTracer rayTracer;
+    private RayTracerBase rayTracer;
     private Point location;
+
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public ImageWriter getImageWriter() {
+        return imageWriter;
+    }
+
+    public RayTracerBase getRayTracer() {
+        return rayTracer;
+    }
+
+    public Point getLocation() {
+        return location;
+    }
 
     private Camera() {
         vTo = null;
@@ -29,41 +54,6 @@ public class Camera implements Cloneable {
         location = Point.ZERO;
     }
 
-    public Point GetLocation() {
-        return this.location;
-    }
-
-    public Vector GetVTo() {
-        return this.vTo;
-    }
-
-    public Vector GetVUp() {
-        return this.vUp;
-    }
-
-    public Vector GetRight() {
-        return this.vRight;
-    }
-
-    public double GetDistance() {
-        return this.distance;
-    }
-
-    public int GetWidth() {
-        return this.width;
-    }
-
-    public int GetHeight() {
-        return this.height;
-    }
-
-    public ImageWriter GetImageWriter() {
-        return this.imageWriter;
-    }
-
-    public RayTracer GetRayTracer() {
-        return this.rayTracer;
-    }
 
     public static Builder getBuilder() {
         return new Builder();
@@ -76,7 +66,7 @@ public class Camera implements Cloneable {
         private final Camera camera = new Camera();
 
 
-        public Builder setRayTracer(RayTracer rayTracer) {
+        public Builder setRayTracer(RayTracerBase rayTracer) {
             camera.rayTracer = rayTracer;
             return this;
         }
@@ -118,51 +108,51 @@ public class Camera implements Cloneable {
                 throw new MissingResourceException("Missing rendering data","Camera","vTo");
             if (camera.vUp == null)
                 throw new MissingResourceException("Missing rendering data","Camera","vUp");
-            if (camera.vRight == null)
-                throw new MissingResourceException("Missing rendering data","Camera","vRight");
             if (camera.width == 0)
                 throw new MissingResourceException("Missing rendering data","Camera","width");
             if (camera.height == 0)
                 throw new MissingResourceException("Missing rendering data","Camera","height");
-            if (camera.rayTracer == null)
-                throw new MissingResourceException("Missing rendering data","Camera","rayTracer");
-            if (camera.imageWriter == null)
-                throw new MissingResourceException("Missing rendering data","Camera","imageWriter");
+//            if (camera.rayTracer == null)
+//                throw new MissingResourceException("Missing rendering data","Camera","rayTracer");
+//            if (camera.imageWriter == null)
+//                throw new MissingResourceException("Missing rendering data","Camera","imageWriter");
             if (camera.distance == 0)
                 throw new MissingResourceException("Missing rendering data","Camera","distance");
-            if (camera.location == Point.ZERO)
+            if (camera.location == null)
                 throw new MissingResourceException("Missing rendering data","Camera","location");
             camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
             return (Camera) camera.clone();
         }
     }
 
+    //todo: check the return value
     @Override
     public Camera clone() {
         return this;
     }
 
     public Ray constructRay(int nX, int nY, int j, int i) {
-//        Point pC = location.add(vTo.scale(distance));
-//        double rX = width /  nX;
-//        double rY = height /  nY;
-//        double xJ = (j - (nX - 1) / 2d) * rX;
-//        double yI = (i - (nY - 1) / 2d) * rY;
-//        Point pIJ = pC;
-//        if (xJ != 0) {
-//            pIJ = pIJ.add(vRight.scale(xJ));
-//        }
-//        if (yI != 0) {
-//            pIJ = pIJ.add(vUp.scale(-yI));
-//        }
-//
-//        //fix the bug
-//        if(xJ != 0 || yI != 0)
-//            pIJ = pIJ.subtract(location);
-//
-//        Vector vIJ = pIJ.subtract(location);
-//        return new Ray(location, vIJ);
-//
-        return null;
+        //assuming distance is a positive non null value
+        Point pC = location.add(vTo.scale(distance));
+
+            double rX = width / nX;
+            double rY = height / nY;
+
+            double xJ = (j - (nX - 1) / 2d) * rX;
+            double yI = -(i - (nY - 1) / 2d) * rY;
+
+            Point pIJ = pC;
+
+            if (!isZero(xJ)) {
+                pIJ = pIJ.add(vRight.scale(xJ));
+            }
+            if (!isZero(yI)) {
+                pIJ = pIJ.add(vUp.scale(yI));
+            }
+
+            Vector vIJ = pIJ.subtract(location);
+            return new Ray(location, vIJ);
+
+
     }
 }
