@@ -1,5 +1,6 @@
 package renderer;
 
+import primitives.Color;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
@@ -203,10 +204,10 @@ public class Camera implements Cloneable {
                 throw new MissingResourceException("Missing rendering data","Camera","width");
             if (camera.height == 0)
                 throw new MissingResourceException("Missing rendering data","Camera","height");
-//            if (camera.rayTracer == null)
-//            throw new MissingResourceException("Missing rendering data","Camera","rayTracer");
-//            if (camera.imageWriter == null)
-//               throw new MissingResourceException("Missing rendering data","Camera","imageWriter");
+           if (camera.rayTracer == null)
+              throw new MissingResourceException("Missing rendering data","Camera","rayTracer");
+           if (camera.imageWriter == null)
+              throw new MissingResourceException("Missing rendering data","Camera","imageWriter");
             if (camera.distance <= 0)
                 throw new MissingResourceException("Missing rendering data","Camera","distance");
             if (camera.location == null)
@@ -268,5 +269,21 @@ public class Camera implements Cloneable {
         return new Ray(location, vIJ);
 
 
+    }
+    public void renderImage()
+    {
+        throw new UnsupportedOperationException("");
+    }
+    public void printGrid(int interval, Color color)
+    {
+
+        for (int i = 0; i < this.width; i++) {
+            for (int j = 0; j < this.height; j++) {
+                if (i % interval == 0 || j % interval == 0) {
+                    imageWriter.writePixel(i, j, color);
+                }
+            }
+        }
+        imageWriter.writeToImage();
     }
 }

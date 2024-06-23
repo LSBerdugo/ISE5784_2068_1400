@@ -6,7 +6,7 @@ public class Scene {
     public String name;
     public Color background=Color.BLACK;
     public AmbientLight ambientLight=AmbientLight.NONE;
-    Geometries geometries=new Geometries();
+    public Geometries geometries=new Geometries();
     public Scene(String name) {
         this.name = name;
     }
