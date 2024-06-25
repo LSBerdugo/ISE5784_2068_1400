@@ -244,8 +244,8 @@ public class Camera implements Cloneable {
         Point pC = location.add(vTo.scale(distance));
 
         // Calculate the size of each pixel in the view plane
-            double rX = width / nX;
-            double rY = height / nY;
+            double rX =(width / (double)nX);
+            double rY = (height / (double)nY);
 
         // Calculate the offset of the current pixel from the center
         double xJ = (j - (nX - 1) / 2d) * rX;
@@ -270,15 +270,18 @@ public class Camera implements Cloneable {
 
 
     }
-    public void renderImage()
-    {
-        throw new UnsupportedOperationException("");
-    }
+
+    /**
+     * Prints a grid on the view plane with a specific interval between the lines.
+     *
+     * @param interval the interval between the lines.
+     * @param color    the color of the grid lines.
+     */
     public void printGrid(int interval, Color color)
     {
 
-        for (int i = 0; i < this.width; i++) {
-            for (int j = 0; j < this.height; j++) {
+        for (int i = 0; i < this.imageWriter.getNx(); i++) {
+            for (int j = 0; j < this.imageWriter.getNy(); j++) {
                 if (i % interval == 0 || j % interval == 0) {
                     imageWriter.writePixel(i, j, color);
                 }
@@ -286,4 +289,57 @@ public class Camera implements Cloneable {
         }
         imageWriter.writeToImage();
     }
+
+    /**
+     * Writes the rendered image to a file.
+     */
+    public void writeToImage()
+    {
+        if(imageWriter==null)
+            throw new MissingResourceException("Missing rendering data","Camera","imageWriter");
+        imageWriter.writeToImage();
+    }
+
+    /**
+     * Renders the image using the castRay algorithm.
+     */
+    public void renderImage()
+    {
+        // Check if the required fields are set
+        if(imageWriter==null)
+            throw new MissingResourceException("Missing rendering data","Camera","imageWriter");
+        // Check if the required fields are set
+        if(rayTracer==null)
+            throw new MissingResourceException("Missing rendering data","Camera","rayTracer");
+        // Loop through all the pixels in the view plane
+        for (int i = 0; i < imageWriter.getNy(); i++)
+        {
+
+            for (int j = 0; j < imageWriter.getNx(); j++)
+            {
+                // Cast a ray through the pixel
+                castRay(imageWriter.getNx(), imageWriter.getNy(), j, i);
+            }
+        }
+        // Write the image to a file
+        imageWriter.writeToImage();
+    }
+
+    /**
+     * Renders the image using the ray tracing algorithm.
+     */
+    private void castRay(int nX, int nY, int j, int i)
+    {
+        // Construct a ray through the pixel
+        Ray ray = constructRay(nX, nY, j, i);
+
+        // Trace the ray in the scene
+        Color color = rayTracer.traceRay(ray);
+
+        // Write the color to the image
+        imageWriter.writePixel(j, i, color);
+
+    }
+
+
 }
