@@ -11,44 +11,44 @@ public class Material {
     /**
      * Sets the diffuse reflection coefficient.
      *
-     * @param kD The diffuse reflection coefficient as a {@code Double3}.
+     * @param kd The diffuse reflection coefficient as a {@code Double3}.
      * @return This {@code Material} object for chaining setters.
      */
-    public Material setkD(Double3 kD) {
-        this.kD = kD;
+    public Material setKd(Double3 kd) {
+        this.kD = kd;
         return this;
     }
 
     /**
      * Sets the specular reflection coefficient.
      *
-     * @param kS The specular reflection coefficient as a {@code Double3}.
+     * @param Ks The specular reflection coefficient as a {@code Double3}.
      * @return This {@code Material} object for chaining setters.
      */
-    public Material setkS(Double3 kS) {
-        this.kS = kS;
+    public Material setKs(Double3 Ks) {
+        this.kS = Ks;
         return this;
     }
 
     /**
      * Sets the diffuse reflection coefficient.
      *
-     * @param kD The diffuse reflection coefficient as a {@code double}.
+     * @param Kd The diffuse reflection coefficient as a {@code double}.
      * @return This {@code Material} object for chaining setters.
      */
-    public Material setkD(double kD) {
-        this.kD = new Double3(kD);
+    public Material setKd(double Kd) {
+        this.kD = new Double3(Kd);
         return this;
     }
 
     /**
      * Sets the specular reflection coefficient.
      *
-     * @param kS The specular reflection coefficient as a {@code double}.
+     * @param Ks The specular reflection coefficient as a {@code double}.
      * @return This {@code Material} object for chaining setters.
      */
-    public Material setkS(double kS) {
-        this.kS = new Double3(kS);
+    public Material setKs(double Ks) {
+        this.kS = new Double3(Ks);
         return this;
     }
 
@@ -58,7 +58,7 @@ public class Material {
      * @param nShininess The shininess exponent.
      * @return This {@code Material} object for chaining setters.
      */
-    public Material setnShininess(int nShininess) {
+    public Material setShininess(int nShininess) {
         this.nShininess = nShininess;
         return this;
     }
