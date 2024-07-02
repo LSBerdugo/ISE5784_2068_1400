@@ -58,10 +58,10 @@ public class Sphere extends RadialGeometry {
      * @return a list of intersection points, or null if there are no intersections
      */
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         // If the ray's head is at the center of the sphere, return the point on the surface in the direction of the ray
         if (ray.getHead().equals(center)) {
-            return List.of(center.add(ray.getDirection().scale(radius)));
+            return List.of(new GeoPoint(this,ray.getDirection().scale(radius)));
         }
 
         // Calculate the vector from the ray's head to the center of the sphere
@@ -97,11 +97,11 @@ public class Sphere extends RadialGeometry {
 
         // Return the intersection points based on which ones are valid
         if (p1 != null && p2 != null) {
-            return List.of(p1, p2);
+            return List.of(new GeoPoint(this,p1),new GeoPoint(this, p2));
         } else if (p1 != null) {
-            return List.of(p1);
+            return List.of(new GeoPoint(this,p1));
         } else if (p2 != null) {
-            return List.of(p2);
+            return List.of(new GeoPoint(this,p2));
         } else {
             return null;
         }

@@ -88,9 +88,9 @@ public class Tube extends RadialGeometry {
      * @return a list of intersection points, or null if there are no intersections
      */
 
-    @Override
 
-    public List<Point> findIntersections(Ray ray) {
+     @Override
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         Vector vAxis = axis.getDirection();
         Vector v = ray.getDirection();
         Point p0 = ray.getHead();
@@ -121,10 +121,10 @@ public class Tube extends RadialGeometry {
             deltaP = p0.subtract(axis.getHead());
         } catch (IllegalArgumentException e1) { // the ray begins at axis P0
             if (vVa == 0) // the ray is orthogonal to Axis
-                return List.of(ray.GetPoint(radius));
+                return List.of(new GeoPoint(this,ray.GetPoint(radius)));
 
             double t = alignZero(Math.sqrt(radius * radius / vMinusVVaVa.lengthSquared()));
-            return t == 0 ? null : List.of(ray.GetPoint(t));
+            return t == 0 ? null : List.of(new GeoPoint(this,ray.GetPoint(t)));
         }
 
         double dPVAxis = alignZero(deltaP.dotProduct(vAxis));
@@ -138,7 +138,7 @@ public class Tube extends RadialGeometry {
                 dPMinusdPVaVa = deltaP.subtract(dPVaVa);
             } catch (IllegalArgumentException e1) {
                 double t = alignZero(Math.sqrt(radius * radius / a));
-                return t == 0 ? null : List.of(ray.GetPoint(t));
+                return t == 0 ? null : List.of(new GeoPoint(this,ray.GetPoint(t)));
             }
         }
 
@@ -163,9 +163,9 @@ public class Tube extends RadialGeometry {
 
         // if both t1 and t2 are positive
         if (t2 > 0)
-            return List.of(ray.GetPoint(t1), ray.GetPoint(t2));
+            return List.of(new GeoPoint(this,ray.GetPoint(t1)), new GeoPoint(this,ray.GetPoint(t2)));
         else // t2 is behind the head
-            return List.of(ray.GetPoint(t1));
+            return List.of(new GeoPoint(this,ray.GetPoint(t1)));
 
 //        return null;
     }

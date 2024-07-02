@@ -7,7 +7,7 @@ import primitives.Vector;
  * Represents a radial geometry in three-dimensional space.
  * A radial geometry is a geometric shape characterized by a radius.
  */
-public abstract class RadialGeometry implements Geometry {
+public abstract class RadialGeometry extends Geometry {
     /**
      * The radius of the radial geometry.
      */

@@ -12,7 +12,7 @@ import static primitives.Util.isZero;
 /**
  * Represents a plane in three-dimensional space.
  */
-public class Plane implements Geometry {
+public class Plane extends Geometry {
     /**
      * A point on the plane.
      */
@@ -107,7 +107,7 @@ public class Plane implements Geometry {
      * @param ray the ray to intersect with the object
      * @return a list containing the intersection point if it exists, or null if there is no intersection
      */
-    @Override
+
     public List<Point> findIntersections(Ray ray) {
 
 
@@ -157,6 +157,12 @@ public class Plane implements Geometry {
 
            return List.of(p);
 
+    }
+
+    @Override
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+        List<Point> listIntersections=this.findIntersections(ray);
+        return List.of(new  GeoPoint(this,listIntersections.get(0)));
     }
 
 }

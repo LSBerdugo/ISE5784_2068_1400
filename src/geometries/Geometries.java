@@ -15,7 +15,7 @@ import java.util.List;
  * that can be intersected by a ray. It implements the Intersectable interface,
  * allowing it to be treated as a single intersectable object.
  */
-public class Geometries implements Intersectable {
+public class Geometries extends Intersectable {
     private final List<Intersectable> geometries = new LinkedList<>();
 
     /**
@@ -50,10 +50,10 @@ public class Geometries implements Intersectable {
      * @return a list of intersection points, or null if there are no intersections
      */
     @Override
-    public List<Point> findIntersections(Ray ray) {
-        List<Point> listGeo = null;
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+        List<GeoPoint> listGeo = null;
         for (Intersectable x : geometries) {
-            List<Point> intersections = x.findIntersections(ray);
+            List<GeoPoint> intersections = x.findGeoIntersections(ray);
             if (intersections != null) {
                 if (listGeo == null) {
                     listGeo = new LinkedList<>();

@@ -14,7 +14,7 @@ import primitives.Vector;
  *
  * @author Dan
  */
-public class Polygon implements Geometry {
+public class Polygon extends Geometry {
     /**
      * List of polygon's vertices
      */
@@ -111,27 +111,8 @@ public class Polygon implements Geometry {
      * @return a list of intersection points, or null if there are no intersections
      */
     @Override
-    public List<Point> findIntersections(Ray ray){
-//        //find intersection for polygon
-//        List<Point> planeIntersections = plane.findIntersections(ray);
-//        if (planeIntersections == null) {
-//            return null;
-//        }
-//        Point p0 = ray.getHead();
-//        Vector v = ray.getDirection();
-//        Vector n = plane.getNormal();
-//        double t = planeIntersections.get(0).subtract(p0).dotProduct(n) / v.dotProduct(n);
-//        if (t <= 0) {
-//            return null;
-//        }
-//        Point p = p0.add(v.scale(t));
-//        Vector v1 = vertices.get(0).subtract(p).crossProduct(vertices.get(1).subtract(p)).normalize();
-//        Vector v2 = vertices.get(1).subtract(p).crossProduct(vertices.get(2).subtract(p)).normalize();
-//        Vector v3 = vertices.get(2).subtract(p).crossProduct(vertices.get(0).subtract(p)).normalize();
-//        if (v1.dotProduct(v2) > 0 && v2.dotProduct(v3) > 0 && v3.dotProduct(v1) > 0) {
-//            return List.of(p);
-//        }
-//        return null;
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray){
+
         try {
             List<Point> planeIntersections = plane.findIntersections(ray);
             if (planeIntersections == null) {
@@ -157,7 +138,7 @@ public class Polygon implements Geometry {
             }
 
             if (isInside) {
-                return List.of(intersectionPoint);
+                return List.of( new GeoPoint(this,intersectionPoint));
             }
 
             return null;
