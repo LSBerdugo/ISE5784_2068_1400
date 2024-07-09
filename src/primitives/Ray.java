@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import static primitives.Util.isZero;
 
+
 /**
  * Represents a ray in three-dimensional space.
  */
@@ -22,6 +23,17 @@ public class Ray {
      * The direction vector of the ray.
      */
     private Vector direction;
+
+    /**
+//     * Constructs a new Ray with the specified starting point and direction vector.
+//     *
+//     * @param head The starting point of the ray.
+//     * @param direction The direction vector of the ray.
+//     */
+//    public Ray(Point point, Vector dir, Vector n) {
+//        double res = dir.dotProduct(n);
+//        this.head = isZero(res) ? this.head : res > 0 ? this.head.add(n.scale(DELTA)):this.head.add(n.scale(-DELTA));
+//    }
 
     /**
      * Returns the starting point of the ray.

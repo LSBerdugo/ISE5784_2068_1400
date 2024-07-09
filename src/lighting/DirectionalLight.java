@@ -44,4 +44,16 @@ public class DirectionalLight extends Light implements LightSource {
     public Vector getL(Point p) {
         return direction.normalize();
     }
+
+    /**
+     * Gets the distance between the light source and the specified point.
+     * Since this is a directional light, the distance is infinite.
+     *
+     * @param point The point to which the distance is calculated.
+     * @return The distance between the light source and the point, which is infinite.
+     */
+    @Override
+    public double getDistance(Point point) {
+        return Double.POSITIVE_INFINITY;
+    }
 }

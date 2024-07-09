@@ -160,9 +160,11 @@ public class Plane extends Geometry {
     }
 
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
         List<Point> listIntersections=this.findIntersections(ray);
+        if(alignZero(listIntersections.get(0).distance(ray.getHead())-maxDistance)<=0)
         return List.of(new  GeoPoint(this,listIntersections.get(0)));
+        return null;
     }
 
 }

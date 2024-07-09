@@ -111,7 +111,7 @@ public class Polygon extends Geometry {
      * @return a list of intersection points, or null if there are no intersections
      */
     @Override
-    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray){
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance){
 
         try {
             List<Point> planeIntersections = plane.findIntersections(ray);
@@ -137,7 +137,7 @@ public class Polygon extends Geometry {
                 }
             }
 
-            if (isInside) {
+            if (isInside&&ray.getHead().distance(intersectionPoint)<=maxDistance){
                 return List.of( new GeoPoint(this,intersectionPoint));
             }
 
