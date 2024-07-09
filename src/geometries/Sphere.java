@@ -6,6 +6,8 @@ import primitives.Vector;
 
 import java.util.List;
 
+import static primitives.Util.alignZero;
+
 /**
  * Represents a sphere in three-dimensional space.
  */
@@ -58,9 +60,9 @@ public class Sphere extends RadialGeometry {
      * @return a list of intersection points, or null if there are no intersections
      */
     @Override
-    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
         // If the ray's head is at the center of the sphere, return the point on the surface in the direction of the ray
-        if (ray.getHead().equals(center)) {
+        if (ray.getHead().equals(center)){
             return List.of(new GeoPoint(this,ray.getDirection().scale(radius)));
         }
 
@@ -88,10 +90,10 @@ public class Sphere extends RadialGeometry {
         // Calculate the intersection points
         Point p1 = null;
         Point p2 = null;
-        if (t1 > 0) {
+        if (t1 > 0&&alignZero(t1-maxDistance)<=0) {
             p1 = ray.GetPoint(t1);
         }
-        if (t2 > 0) {
+        if (t2 > 0&& alignZero(t2-maxDistance)<=0) {
             p2 = ray.GetPoint(t2);
         }
 

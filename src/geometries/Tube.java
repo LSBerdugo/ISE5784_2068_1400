@@ -90,7 +90,7 @@ public class Tube extends RadialGeometry {
 
 
      @Override
-    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
         Vector vAxis = axis.getDirection();
         Vector v = ray.getDirection();
         Point p0 = ray.getHead();
@@ -120,11 +120,11 @@ public class Tube extends RadialGeometry {
         try {
             deltaP = p0.subtract(axis.getHead());
         } catch (IllegalArgumentException e1) { // the ray begins at axis P0
-            if (vVa == 0) // the ray is orthogonal to Axis
+            if (vVa == 0&& alignZero(ray.GetPoint(radius).distance(ray.getHead())-maxDistance)>=0) // the ray is orthogonal to Axis
                 return List.of(new GeoPoint(this,ray.GetPoint(radius)));
 
             double t = alignZero(Math.sqrt(radius * radius / vMinusVVaVa.lengthSquared()));
-            return t == 0 ? null : List.of(new GeoPoint(this,ray.GetPoint(t)));
+            return t == 0 ? null : alignZero(t-maxDistance)>=0?  List.of(new GeoPoint(this,ray.GetPoint(t))):null;
         }
 
         double dPVAxis = alignZero(deltaP.dotProduct(vAxis));
@@ -138,7 +138,7 @@ public class Tube extends RadialGeometry {
                 dPMinusdPVaVa = deltaP.subtract(dPVaVa);
             } catch (IllegalArgumentException e1) {
                 double t = alignZero(Math.sqrt(radius * radius / a));
-                return t == 0 ? null : List.of(new GeoPoint(this,ray.GetPoint(t)));
+                return t == 0 ? null : alignZero(t-maxDistance)>=0?List.of(new GeoPoint(this,ray.GetPoint(t))):null;
             }
         }
 
@@ -161,12 +161,14 @@ public class Tube extends RadialGeometry {
 
         double t2 = alignZero(tm - th);
 
-        // if both t1 and t2 are positive
-        if (t2 > 0)
+        // if both t1 and t2 are positive and t2 and t1 are less that max distance return both points
+        if (t2 > 0&&alignZero(t2-maxDistance)<=0&&alignZero(t1-maxDistance)<=0)
             return List.of(new GeoPoint(this,ray.GetPoint(t1)), new GeoPoint(this,ray.GetPoint(t2)));
-        else // t2 is behind the head
+        else
+            if(alignZero(t1-maxDistance)<=0)// t2 is behind the head and t1 is less than max distance
             return List.of(new GeoPoint(this,ray.GetPoint(t1)));
 
-//        return null;
+
+        return null;
     }
 }

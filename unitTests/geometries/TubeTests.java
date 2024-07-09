@@ -393,7 +393,81 @@ class TubeTests {
 
 
 
+    @Test
+    public void testFindGeoIntersectionsHelper() {
+        testIntersectionsHelper1();
+        testIntersectionsHelper2();
+        testIntersectionsHelper3();
+        testIntersectionsHelper4();
+    }
 
+    Point axisPoint = new Point(0, 0, 0);
+    Vector axisDirection = new Vector(0, 1, 0);
+    double radius = 1.0;
+    Tube tube1=new Tube(new Ray(axisPoint, axisDirection), radius);
+
+    @Test
+    public void testIntersectionsHelper1()
+{
+
+
+        Point rayOrigin = new Point(1, 0, 2);
+        Vector rayDirection = new Vector(0, 0, -1);
+        Ray ray = new Ray(rayOrigin, rayDirection);
+        double maxDistance = 10.0;
+
+        List<Intersectable.GeoPoint> intersections = tube1.findGeoIntersectionsHelper(ray, maxDistance);
+        assertNotNull(intersections, "Expected intersection points but found null");
+        assertEquals(2, intersections.size(), "Expected 2 intersection points");
+
+        Point expectedPoint1 = new Point(1, 0, 1);
+        Point expectedPoint2 = new Point(1, 0, -1);
+
+        assertEquals(expectedPoint1, intersections.get(0).point, "Intersection point 1 does not match");
+        assertEquals(expectedPoint2, intersections.get(1).point, "Intersection point 2 does not match");
+    }
+
+    @Test
+    public void testIntersectionsHelper2() {
+
+
+        Point rayOrigin = new Point(1, 0, 2);
+        Vector rayDirection = new Vector(0, 0, -1);
+        Ray ray = new Ray(rayOrigin, rayDirection);
+        double maxDistance = 1.0;
+
+        List<Intersectable.GeoPoint> intersections = tube1.findGeoIntersectionsHelper(ray, maxDistance);
+        assertNotNull(intersections, "Expected intersection points but found null");
+        assertEquals(1, intersections.size(), "Expected 1 intersection point");
+
+        Point expectedPoint = new Point(1, 0, 1);
+        assertEquals(expectedPoint, intersections.get(0).point, "Intersection point does not match");
+    }
+
+    @Test
+    public void testIntersectionsHelper3() {
+
+        Point rayOrigin = new Point(3, 0, 0);
+        Vector rayDirection = new Vector(1, 0, 0);
+        Ray ray = new Ray(rayOrigin, rayDirection);
+        double maxDistance = 10.0;
+
+        List<Intersectable.GeoPoint> intersections = tube1.findGeoIntersectionsHelper(ray, maxDistance);
+        assertNull(intersections, "Expected no intersection points but found some");
+    }
+
+    @Test
+    public void testIntersectionsHelper4() {
+
+
+        Point rayOrigin = new Point(1, 0, 1);
+        Vector rayDirection = new Vector(0, 1, 0);
+        Ray ray = new Ray(rayOrigin, rayDirection);
+        double maxDistance = 10.0;
+
+        List<Intersectable.GeoPoint> intersections = tube1.findGeoIntersectionsHelper(ray, maxDistance);
+        assertNull(intersections, "Expected no intersection points but found some");
+    }
 
 
 

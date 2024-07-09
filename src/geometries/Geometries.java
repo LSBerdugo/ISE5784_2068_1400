@@ -50,7 +50,7 @@ public class Geometries extends Intersectable {
      * @return a list of intersection points, or null if there are no intersections
      */
     @Override
-    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
         List<GeoPoint> listGeo = null;
         for (Intersectable x : geometries) {
             List<GeoPoint> intersections = x.findGeoIntersections(ray);
@@ -61,7 +61,16 @@ public class Geometries extends Intersectable {
                 listGeo.addAll(intersections);
             }
         }
-        return listGeo;
+
+        if(listGeo == null)
+            return null;
+        for (int i =listGeo.size() - 1; i >= 0; --i)
+        {
+            if (listGeo.get(i).point.distance(ray.getHead()) > maxDistance)
+                listGeo.remove(i);
+        }
+        return listGeo.isEmpty() ? null :listGeo;
+
     }
 }
 

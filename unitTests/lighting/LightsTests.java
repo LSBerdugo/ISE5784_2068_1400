@@ -239,6 +239,8 @@ private final Geometry triangle1_2=new Triangle(vertices[0], vertices[1], vertic
    public void trianglesMultipleLights() {
 
    scene2.setAmbientLight(new AmbientLight(new Color(255,100,50), new Double3(0.05)));
+
+
       scene2.geometries.add(triangle1_1, triangle1_2);
     scene2.lights.add(new PointLight(new Color(255, 140, 0), trianglesLightPosition1).setKl(0.00005).setKq(0.000005));
     scene2.lights.add(new SpotLight(new Color(255, 140, 0), trianglesLightPosition2, trianglesLightDirection2).setKl(0.05).setKq(0.005));
