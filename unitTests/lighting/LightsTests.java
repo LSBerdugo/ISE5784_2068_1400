@@ -175,17 +175,14 @@ public class LightsTests {
 
 
    private static final int SHININESS2 = 750;
-   private static final double KD_Sphere = 0.5;
-    private static final double KS_Sphere = 0.3;
-    private static final Double3 KD_Triangle = new Double3(0.6, 0.3, 0.2);
-    private static final Double3 KS_Triangle = new Double3(0.8, 0.6, 0.5);
+   private static final int SHININESS3 = 60;
 
 
-    private final Material materialSphere = new Material().setKd(KD_Sphere).setKs(KS_Sphere).setShininess(SHININESS2);
-    private final Material materialTriangle = new Material().setKd(KD_Triangle).setKs(KS_Triangle).setShininess(SHININESS2);
+    private final Material materialSphere = new Material().setKd(0.5).setKs(0.3).setShininess(SHININESS2);
+    private final Material materialTriangle = new Material().setKd(0.6).setKs(0.4).setShininess(SHININESS3);
 
     private final Color SphereColor = new Color(100, 100, 255);
-    private final Color TriangleColor = new Color(76, 80, 169);
+    private final Color TriangleColor = new Color(70, 130, 180);
 
  private final Geometry  sphere1=new Sphere(sphereCenter, SPHERE_RADIUS).setEmission(SphereColor).setMaterial(materialSphere);
 
@@ -204,17 +201,15 @@ private final Geometry triangle1_2=new Triangle(vertices[0], vertices[1], vertic
     private final Point sphereLightPosition5 = new Point(50, -50, 50);
     private final Vector sphereLightDirection5 = new Vector(-1, 1, -1);
 
-   Point trianglesLightPosition1 = new Point(50, 50, -100);
-   Vector trianglesLightDirection1 = new Vector(-1, -1, -2);
+   Point trianglesLightPosition1 = new Point(0, 0, -30);
 
-   Point trianglesLightPosition2 = new Point(-50, -50, -100);
-   Vector trianglesLightDirection2 = new Vector(1, 1, -1);
+   Point trianglesLightPosition2 = new Point(0, 0, -55);
+   Vector trianglesLightDirection2 = new Vector(0, 0, -1);
 
-   Point trianglesLightPosition3 = new Point(-50, 50, -100);
-   Vector triangesLightDirection3 = new Vector(1, -1, -2);
+   Point trianglesLightPosition3 = new Point(0, 0, -60);
+   Vector trianglesLightDirection3 = new Vector(0, 0, -1);
 
-   Point trianglesLightPosition4 = new Point(50, -50, -100);
-   Vector trianglesLightDirection4 = new Vector(-1, 1, -1);
+   Vector trianglesLightDirection4 = new Vector(0, -1, -1);
 
 
 
@@ -241,20 +236,20 @@ private final Geometry triangle1_2=new Triangle(vertices[0], vertices[1], vertic
 
    /** Produce a picture of two triangles lighted by multi spotlight */
    @Test
-   public void trianglesLights() {
+   public void trianglesMultipleLights() {
+
+   scene2.setAmbientLight(new AmbientLight(new Color(255,100,50), new Double3(0.05)));
       scene2.geometries.add(triangle1_1, triangle1_2);
-      scene2.lights.add(new SpotLight(new Color(8, 24, 58), trianglesLightPosition1, trianglesLightDirection1).setKl(0.0001).setKq(0.00001));
-     scene2.lights.add(new SpotLight(new Color(22,40,82), trianglesLightPosition2, trianglesLightDirection2).setKl(0.0001).setKq(0.00001));
-      scene2.lights.add(new PointLight(new Color(253,94,83), trianglesLightPosition3)
-              .setKl(0.005).setKq(0.0001));
-      scene2.lights.add(new DirectionalLight(new Color(252,156,84), trianglesLightDirection4));
-//      scene2.lights.add(new PointLight(new Color(255,255,102), new Point(0, 0, 50))
-//              .setKl(0.0001).setKq(0.00001));
-//      scene2.lights.add(new SpotLight(new Color(120,0,255), new Point(50, 0, -30), new Vector(-1, 0, 1))
-//              .setKl(0.0001).setKq(0.00001));
-//      scene2.lights.add(new PointLight(new Color(90,150,0), new Point(30, 30, 50))
-//              .setKl(0.0005).setKq(0.00001));
-//      scene2.lights.add(new DirectionalLight(new Color(100,270,255), new Vector(-1, -1, -1)));
+    scene2.lights.add(new PointLight(new Color(255, 140, 0), trianglesLightPosition1).setKl(0.00005).setKq(0.000005));
+    scene2.lights.add(new SpotLight(new Color(255, 140, 0), trianglesLightPosition2, trianglesLightDirection2).setKl(0.05).setKq(0.005));
+
+ scene2.lights.add(new SpotLight(new Color(255,160,175), trianglesLightPosition3, trianglesLightDirection3).setKl(0.0001).setKq(0.00001));
+
+ scene2.lights.add(new DirectionalLight(new Color(255,69,0), trianglesLightDirection4));
+
+    //  scene2.lights.add(new PointLight(new Color(255, 165, 0), new Point(0, 0, -50)).setKl(0.0001).setKq(0.00001));
+     // scene2.lights.add(new PointLight(new Color(255, 255, 102), new Point(0, 0, -65)).setKl(0.002).setKq(0.00002));
+
       ImageWriter imageWriter = new ImageWriter("TriangleMultipleLights", 500, 500);
       Camera cam2=camera2.setImageWriter(imageWriter).build(); //
               cam2.renderImage() ;//
