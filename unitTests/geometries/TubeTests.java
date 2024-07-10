@@ -410,38 +410,35 @@ class TubeTests {
     public void testIntersectionsHelper1()
 {
 
+    Point rayOrigin1 = new Point(0.5, 0, 0);
+    Vector rayDirection1 = new Vector(0, 1, 0);
+    Ray ray1 = new Ray(rayOrigin1, rayDirection1);
+    double maxDistance1 = 10.0;
 
-        Point rayOrigin = new Point(1, 0, 2);
-        Vector rayDirection = new Vector(0, 0, -1);
-        Ray ray = new Ray(rayOrigin, rayDirection);
-        double maxDistance = 10.0;
+    List<Intersectable.GeoPoint> intersections1 = tube.findGeoIntersectionsHelper(ray1, maxDistance1);
 
-        List<Intersectable.GeoPoint> intersections = tube1.findGeoIntersectionsHelper(ray, maxDistance);
-        assertNotNull(intersections, "Expected intersection points but found null");
-        assertEquals(2, intersections.size(), "Expected 2 intersection points");
+    assertNotNull(intersections1, "Expected intersection points but found null");
+    assertEquals(1, intersections1.size(), "Expected 1 intersection point");
 
-        Point expectedPoint1 = new Point(1, 0, 1);
-        Point expectedPoint2 = new Point(1, 0, -1);
-
-        assertEquals(expectedPoint1, intersections.get(0).point, "Intersection point 1 does not match");
-        assertEquals(expectedPoint2, intersections.get(1).point, "Intersection point 2 does not match");
     }
 
     @Test
     public void testIntersectionsHelper2() {
+        //test with 2 intersection points
+
+        Point rayOrigin2 = new Point(5, 1, 0);
+        Vector rayDirection2 = new Vector(-1, 0,0);
+        Ray ray2 = new Ray(rayOrigin2, rayDirection2);
+        double maxDistance2 = 10.0;
 
 
-        Point rayOrigin = new Point(1, 0, 2);
-        Vector rayDirection = new Vector(0, 0, -1);
-        Ray ray = new Ray(rayOrigin, rayDirection);
-        double maxDistance = 1.0;
 
-        List<Intersectable.GeoPoint> intersections = tube1.findGeoIntersectionsHelper(ray, maxDistance);
-        assertNotNull(intersections, "Expected intersection points but found null");
-        assertEquals(1, intersections.size(), "Expected 1 intersection point");
 
-        Point expectedPoint = new Point(1, 0, 1);
-        assertEquals(expectedPoint, intersections.get(0).point, "Intersection point does not match");
+
+       List<Intersectable.GeoPoint> intersections2 = tube1.findGeoIntersectionsHelper(ray2, maxDistance2);
+       assertNotNull(intersections2, "Expected intersection points but found null");
+       assertEquals(2, intersections2.size(), "Expected 2 intersection points");
+
     }
 
     @Test

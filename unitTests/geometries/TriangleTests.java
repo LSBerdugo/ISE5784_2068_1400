@@ -5,6 +5,8 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -122,4 +124,42 @@ public class TriangleTests {
         Ray r=new Ray(new Point(0,-1,0),new Vector(-3,2,0));
         assertNull( triangle.findIntersections(r),"ERROR:Ray does not intersects the triangle");
     }
+
+
+
+
+
+    @Test
+    public void testFindGeoIntersectionsHelper() {
+        testIntersectionsHelper1();
+        //testIntersectionsHelper2();
+
+    }
+
+  Triangle triangle1=new Triangle(new Point(0,0,0),new Point(0,1,0),new Point(0,0,1));
+
+    @Test
+    public void testIntersectionsHelper1()
+    {
+
+        //test with intersection point but the distance between head of ray and intersection point is greater than maxDistance
+
+        Point rayOrigin = new Point(0.5, 0.5, 0.3);
+        Vector rayDirection = new Vector(-1, 0, 0);
+        Ray ray = new Ray(rayOrigin, rayDirection);
+        double maxDistance = 0.1;
+        assertNull(triangle1.findGeoIntersectionsHelper(ray, maxDistance), "Expected null but found intersection points");
+    }
+
+    @Test
+    public void testIntersectionsHelper2() {
+      //test with 1 intersection point, and within the max distance
+        Point rayOrigin = new Point(0.5, 0.5, 0.3);
+        Vector rayDirection = new Vector(-1, 0, 0);
+        Ray ray = new Ray(rayOrigin, rayDirection);
+        double maxDistance = 3.0;
+        assertEquals(1, triangle1.findGeoIntersectionsHelper(ray, maxDistance).size(), "Expected 1 intersection point");
+
+    }
+
 }

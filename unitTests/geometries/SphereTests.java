@@ -180,4 +180,44 @@ class SphereTests {
 
 
 
+
+    @Test
+    void TestIntersectionHelper() {
+        TestIntersectionHelper1();
+        TestIntersectionHelper2();
+        TestIntersectionHelper3();
+    }
+
+    @Test
+    void TestIntersectionHelper1()
+    {
+       //test geointersectionhelper when there is 2 intersections with maxdistance 5
+
+
+        Ray r=new Ray(new Point(-1,0,0),new Vector(3,0,0));
+        final var result = sphere.findGeoIntersectionsHelper(r,5).stream().toList();
+        assertEquals(2,result.size(),"ERROR:Ray intersects the sphere in two points");
+    }
+
+
+    @Test
+    void TestIntersectionHelper2()
+    {
+        //test geointersectionhelper when there is 1 intersections with maxdistance 5
+        Ray r=new Ray(new Point(-1,0,0),new Vector(3,0,0));
+        final var result = sphere.findGeoIntersectionsHelper(r,1).stream().toList();
+        assertEquals(1,result.size(),"ERROR:Ray intersects the sphere in one point");
+    }
+
+    @Test
+    void TestIntersectionHelper3()
+    {
+        //test geointersectionhelper when there is 0 intersections with maxdistance 5
+        Ray r=new Ray(new Point(-1,0,0),new Vector(3,0,0));
+        final var result = sphere.findGeoIntersectionsHelper(r,0);
+        assertNull(result,"ERROR:Ray does not intersects the sphere");
+    }
+
+
+
 }
