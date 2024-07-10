@@ -129,15 +129,54 @@ public class SimpleRayTracer extends RayTracerBase {
         for (LightSource lightSource : scene.lights) {
             Vector l = lightSource.getL(gp.point);
             double nl = alignZero(n.dotProduct(l));
-            if (nl * nv > 0 && unshaded(gp, lightSource, l, n)) { //
+            if (nl * nv > 0 ) { //
                 //sign(nl) == sign(nv)
-               // Double3 ktr = transparency(gp, lightSource, l, n);
-               // if (!ktr.product(k).lowerThan(MIN_CALC_COLOR_K)){
+                Double3 ktr = transparency(gp, lightSource, l, n);
+                if (!ktr.product(k).lowerThan(MIN_CALC_COLOR_K)){
                 Color iL = lightSource.getIntensity(gp.point);
                 color = color.add(iL.scale(calcDiffusive(mat, nl < 0 ? -nl : nl)), iL.scale((calcSpecular(mat, n, l, nl, v))));}
-           // }
+            }
         }
         return color;
+    }
+
+    private Double3 transparency(GeoPoint gp, LightSource lightSource, Vector l, Vector n) {
+
+        // Compute the direction from the point to the light source
+        Vector lightDirection = l.scale(-1);
+        Point point = gp.point;
+
+        // Create a ray from the point towards the light source
+        Ray lightRay = new Ray(point, n, lightDirection);
+
+        // Compute the maximum distance to the light source
+        double maxDistance = lightSource.getDistance(point);
+
+        // Find intersections of the ray with geometries in the scene
+        List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay);
+
+        // If there are no intersections, the transparency coefficient is 1 (fully transparent)
+        if (intersections == null)
+            return Double3.ONE;
+
+        // Initialize the transparency coefficient to 1 (fully transparent)
+        Double3 ktr = Double3.ONE;
+
+        // Iterate over the intersections and compute the transparency coefficient
+        for (var geo : intersections) {
+            // Check if the distance between the intersection point and the geometry is within the maximum distance to the light source
+            if (point.distance(geo.point) <= maxDistance) {
+                // Multiply the transparency coefficient by the transparency factor of the intersected geometry's material
+                ktr = ktr.product(geo.geometry.getMaterial().kT);
+
+                // If the transparency coefficient falls below the minimum calculation threshold, return a fully opaque value (0 transparency)
+                if (ktr.lowerThan(MIN_CALC_COLOR_K)) {
+                    return Double3.ZERO;
+                }
+            }
+        }
+
+        return ktr;
     }
 
 
@@ -217,8 +256,6 @@ public class SimpleRayTracer extends RayTracerBase {
         Ray lightRay = new Ray(gp.point,n, lightDirection);
        Material mat= gp.geometry.getMaterial();
 
-
-
         var intersections = scene.geometries.findGeoIntersections(lightRay, ls.getDistance(gp.point));
 
 
@@ -228,7 +265,7 @@ public class SimpleRayTracer extends RayTracerBase {
             intersections.remove(gp);
 
 
-            return intersections.isEmpty()&&(mat.kT==Double3.ZERO);
+            return intersections.isEmpty();
 
     }
 
