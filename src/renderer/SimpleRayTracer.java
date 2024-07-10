@@ -45,6 +45,13 @@ public class SimpleRayTracer extends RayTracerBase{
 
 
 
+    /**
+     * Calculate the diffusive reflection component of the material.
+     *
+     * @param mat the material
+     * @param nl  the dot product of the normal and light direction vectors
+     * @return the diffusive reflection component
+     */
 
     /**
      * Calculate the diffusive effect
@@ -73,6 +80,13 @@ public class SimpleRayTracer extends RayTracerBase{
 
         return mat.kS.scale(Math.pow(Math.max(r.dotProduct(v.scale(-1d)),0), mat.nShininess));
     }
+    /**
+     * Calculate the local effects (diffusive and specular reflection) at a given point.
+     *
+     * @param gp  the geo point where the effects are calculated
+     * @param ray the ray that intersects the point
+     * @return the color at the point considering local effects
+     */
 
 
     /**
@@ -110,11 +124,14 @@ public class SimpleRayTracer extends RayTracerBase{
     }
 
 
-        /**
-         * Calculate the color intensity in a point
-         * @param closestGeoPoint the point to calculate the color intensity
-         * @return the color intensity
-         */
+    /**
+     * Calculate the color intensity at the closest intersection point.
+     *
+     * @param closestGeoPoint the closest geo point of intersection
+     * @param ray             the ray that intersects the point
+     * @return the color intensity at the closest intersection point
+     */
+
         private Color calcColor (GeoPoint closestGeoPoint,Ray ray){
             return scene.ambientLight.getIntensity().add(calcLocalEffects(closestGeoPoint, ray));
         }
