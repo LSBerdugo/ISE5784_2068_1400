@@ -10,10 +10,12 @@ import java.util.Objects;
 import static primitives.Util.isZero;
 
 
+
 /**
  * Represents a ray in three-dimensional space.
  */
 public class Ray {
+    private static final double DELTA = 0.01;
     /**
      * The starting point of the ray.
      */
@@ -60,6 +62,14 @@ public class Ray {
     public Ray(Point p, Vector v) {
         head = p;
         direction = v.normalize();
+    }
+    public Ray(Point p,Vector n,Vector v) {
+        this.direction=v.normalize();
+        double nv =n.dotProduct(this.direction);
+        Vector delta=n.scale(DELTA);
+        if(nv<0)
+            delta=delta.scale(-1);
+        this.head=p.add(delta);
     }
 
 
