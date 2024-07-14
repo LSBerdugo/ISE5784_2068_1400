@@ -15,7 +15,7 @@ import static primitives.Util.isZero;
  * Represents a ray in three-dimensional space.
  */
 public class Ray {
-    private static final double DELTA = 0.01;
+    private static final double DELTA = 0.1;
     /**
      * The starting point of the ray.
      */
