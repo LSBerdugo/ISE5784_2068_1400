@@ -152,9 +152,20 @@ public class ReflectionRefractionTests {
 
                 new Sphere(new Point(-400, -100, -500), 330)
                         .setEmission(new Color(237, 50, 2)).
-                        setMaterial(new Material().setKr(0.5d).setKd(1d).setShininess(70))
+                        setMaterial(new Material().setKr(0.5d).setKd(1d).setShininess(70)),
+                new Triangle(new Point(10,0,-20),new Point(110,0,-20),new Point(50,0,-50)).
+                        setEmission(new Color(0,0,0)),
+                new Triangle(new Point(-30,-63,-30),new Point(60,-63,-30),new Point(10,-60,-100)).
+                        setEmission(new Color(40,0,0)),
+               new Triangle(new Point(0, 70, -250),new Point(100,70,-250),new Point(50,40,-250)).
+                       setEmission(new Color (173,216,330))
         );
-//
+
+//scene.lights.add(
+//                //spotlight in the sphere maron the SpotLight blue(on1).
+//                new PointLight(new Color(219, 205, 124), new Point(50, 100, -300))
+//                        .setKl(0.01)
+//                        .setKq(0.0001));
 //        scene.lights.add(
 //                //spotlight in the sphere blue.
 //                new SpotLight(new Color(0, 0, 66), new Point(0, -199, 30),new Vector(0,1,0))
@@ -193,6 +204,8 @@ public class ReflectionRefractionTests {
                 new PointLight(new Color(219, 205, 124), new Point(50, 100, -300))
                         .setKl(0.01)
                         .setKq(0.0001));
+
+
         scene.lights.add(
                 //spotlight in the sphere maron the SpotLight blue(on2).
                 new PointLight(new Color(147, 119, 72), new Point(50, 300, -300))
@@ -224,6 +237,11 @@ public class ReflectionRefractionTests {
                         .setKl(0.00001)
                         .setKq(0.000001));
         scene.lights.add(
+//hhhhh#
+new SpotLight(new Color(200, 173, 127), new Point(200, -200, -50), new Vector(-2, 0.25, -0.1))
+                        .setKl(0.01)
+                        .setKq(0.0001));
+        scene.lights.add(
                 //spotlight in the sphere yellow the SpotLight blue(on2).
                 new PointLight(new Color(0, 20, 0), new Point(0, -40, -20))
                         .setKl(0.1)
@@ -250,7 +268,7 @@ public class ReflectionRefractionTests {
 
         Camera cam3 = cameraBuilder.setLocation(new Point(0, 0, 1000)).setVpDistance(1000)
                 .setVpSize(200, 200)
-                .setImageWriter(new ImageWriter("Image1", 600, 600))
+                .setImageWriter(new ImageWriter("Image2", 600, 600))
                 .build();
 
         // Create a sphere
@@ -278,21 +296,21 @@ public class ReflectionRefractionTests {
 
         // Render the scene (Assuming you have a render method in your Geometries class)
 
-        Random rand=new Random();
-        int sign1=1;
-        int sign2=1;
-        float starSize= 1;
-        for (int i = 0; i < 600; i++) {
-            float x = rand.nextFloat() * cam3.getWidth()*sign1;
-            float y = rand.nextFloat() * cam3.getHeight()*sign2;
-            float z = rand.nextFloat() * 20 *sign1-1300;
-            Triangle star = new Triangle(new Vector(x, y, z), new Vector(x + starSize, y, z), new Vector(x + starSize / 2, y + starSize, z));
-            star.setEmission(new Color(255,255,255));
-            scene.geometries.add(star);
-            if(i==300)
-                sign2*=-1;
-            sign1*=-1;
-        }
+//        Random rand=new Random();
+//        int sign1=1;
+//        int sign2=1;
+//        float starSize= 1;
+//        for (int i = 0; i < 600; i++) {
+//            float x = rand.nextFloat() * cam3.getWidth()*sign1;
+//            float y = rand.nextFloat() * cam3.getHeight()*sign2;
+//            float z = rand.nextFloat() * 20 *sign1-1300;
+//            Triangle star = new Triangle(new Vector(x, y, z), new Vector(x + starSize, y, z), new Vector(x + starSize / 2, y + starSize, z));
+//            star.setEmission(new Color(255,255,255));
+//            scene.geometries.add(star);
+//            if(i==300)
+//                sign2*=-1;
+//            sign1*=-1;
+//        }
         cam3.renderImage();
         cam3.writeToImage();
 
