@@ -180,13 +180,41 @@ public class ReflectionRefractionTests {
                         .setKc(0.01)
 
         );
-        //the SpotLight of the bedge sphere between the yellow sphere the shadow.
+        //the SpotLight of the beIge sphere between the yellow sphere the shadow.
         light.add(
 
                 new SpotLight(new Color(0, 97, 255), new Point(200, -150, 150), new Vector(-1, -1, -1))
                         .setKl(0.001).setKq(0.0001)
 
         );
+
+       //light near the green spehre that will do a shadow in the blue sphere4
+        // //sphere blue
+        //                new Sphere(new Point(100, -180, 170), 25)
+        //                        .setEmission(new Color(0, 114, 250)).
+        //                        setMaterial(new Material().setKd(2d).setKs(1d).setShininess(1500)),
+        //                //the sphere green
+        //                new Sphere(new Point(140, -185, 100), 22)
+        //                        .setEmission(new Color(0, 83, 75)).
+        //                        setMaterial(new Material().setKd(1d).setKt(1d).setKs(0.5).setShininess(500)),
+
+
+        //light near the green spehre that will do a shadow in the blue sphere4
+        light.add(
+
+                new SpotLight(new Color(0, 97, 255), new Point(140, -185, 100), new Vector(0, 0, -1))
+                        .setKl(0.1).setKq(0.01)
+
+        );
+
+        //light from behind the green sppere
+        light.add(
+
+                new SpotLight(new Color(255, 255, 255), new Point(140, -185, 50), new Vector(-1, 0.5, 2))
+                        .setKl(0.0001).setKq(0.0001)
+
+        );
+
 
 
 
