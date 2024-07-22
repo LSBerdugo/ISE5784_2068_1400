@@ -1,12 +1,17 @@
 package renderer;
 
+import geometries.Plane;
 import primitives.Color;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.MissingResourceException;
+import java.util.Random;
 
+import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 
@@ -25,7 +30,11 @@ public class Camera implements Cloneable {
     private ImageWriter imageWriter;
     private RayTracerBase rayTracer;
     private Point location;
-
+    //aperture properties
+    private int APERTURE_NUMBER_OF_POINTS=9;
+    private double depthOfField;
+    private double aperture;
+    private boolean DofON=false;
 
     /**
      * Returns the distance of the camera to the view plane.
@@ -65,6 +74,17 @@ public class Camera implements Cloneable {
 
         return imageWriter;
     }
+    public double getaperture() {
+
+        return aperture;
+    }
+    public double getdepthOfField() {
+
+        return depthOfField;
+    }
+    public int getApertureNumberOfPoints( ) {
+       return APERTURE_NUMBER_OF_POINTS;
+    }
 
     /**
      * Returns the {@link RayTracerBase} associated with the camera.
@@ -86,13 +106,18 @@ public class Camera implements Cloneable {
         return location;
     }
 
-    private Camera() {
+    private Camera()
+    {
         vTo = null;
         vUp = null;
         vRight = null;
         imageWriter = null;
         rayTracer = null;
         location = Point.ZERO;
+         depthOfField=0;
+         DofON=false;
+         aperture=0;
+         APERTURE_NUMBER_OF_POINTS=9;
     }
 
 
@@ -155,6 +180,7 @@ public class Camera implements Cloneable {
         public Builder setDirection(Vector vTo, Vector vUp) {
             camera.vTo = vTo.normalize();
             camera.vUp = vUp.normalize();
+            camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
 
             return this;
         }
@@ -189,6 +215,23 @@ public class Camera implements Cloneable {
             return this;
         }
 
+        public Builder setAperture(double aperture) {
+            camera.aperture = aperture;
+            return this;
+        }
+        public Builder setDepthOfField(double Def) {
+            camera.depthOfField = Def;
+            return this;
+        }
+        public Builder setDofON(boolean DefOn) {
+            camera.DofON = DefOn;
+            return this;
+        }
+        public Builder setApertureNumberOfPoints(int numberOfPoints ) {
+            camera.APERTURE_NUMBER_OF_POINTS=numberOfPoints;
+            return this;
+
+        }
         /**
          * Builds the {@link Camera} instance.
          *
@@ -212,7 +255,6 @@ public class Camera implements Cloneable {
                 throw new MissingResourceException("Missing rendering data","Camera","distance");
             if (camera.location == null)
                 throw new MissingResourceException("Missing rendering data","Camera","location");
-            camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
             return (Camera) camera.clone();
         }
     }
@@ -290,6 +332,7 @@ public class Camera implements Cloneable {
         imageWriter.writeToImage();
     }
 
+
     /**
      * Writes the rendered image to a file.
      */
@@ -332,14 +375,71 @@ public class Camera implements Cloneable {
     {
         // Construct a ray through the pixel
         Ray ray = constructRay(nX, nY, j, i);
-
-        // Trace the ray in the scene
-        Color color = rayTracer.traceRay(ray);
-
+        if(DofON)
+        {
+            List <Ray>MyRayList = constructRaysGridFromCamera(ray);
+            Color myColor=Color.BLACK;
+            for (Ray myray :MyRayList )
+            {
+                myColor=myColor.add(rayTracer.traceRay(myray));
+                imageWriter.writePixel(j,i,myColor.reduce(MyRayList.size()));
+            }
+        }
+        else
+        {
+            Color color = rayTracer.traceRay(ray);
+            imageWriter.writePixel(j, i, color);
+            }
         // Write the color to the image
-        imageWriter.writePixel(j, i, color);
+
 
     }
 
+    private List<Ray> constructRaysGridFromCamera(Ray ray)
+    {
+        List<Ray>MyRays=new LinkedList<>();
+        double t0=depthOfField+distance;
+        double t=t0/(vTo.dotProduct(ray.getDirection()));
+        Point FocusPoint=ray.GetPoint(t);
+        double PixelSize =alignZero((aperture*2)/APERTURE_NUMBER_OF_POINTS);
+        for(int i=0;i<APERTURE_NUMBER_OF_POINTS;i++)
+        {
+            for(int j=0;j<APERTURE_NUMBER_OF_POINTS;j++)
+            {
+                Ray tmpRay = constructRayFromPixel( j, i, PixelSize, FocusPoint);
+                // we check if each ray is in the circle of the camera
+                if (tmpRay.getHead().equals(location)) {// if the ray is from the camera center
+                    MyRays.add(tmpRay); // we add the ray to the list myRays
+                } else if (tmpRay.getHead().subtract(location).dotProduct(tmpRay.getHead().subtract(location)) <= aperture * aperture) {
+                    // if the distance with the center (squared) is <= the square of the radius -> the ray is in the circle of the camera
+                    MyRays.add(tmpRay); // we add the ray to the list myRays
+                }
+            }
+        }
+        return MyRays;
+    }
 
-}
+    private Ray constructRayFromPixel(int j, int i, double pixelSize, Point focusPoint)
+    {
+        Point pIJ = location;
+
+        Random r = new Random(); // we want a random point for each pixel for more precision
+
+        double xJ = ((j + r.nextDouble() / (r.nextBoolean() ? 2 : -2)) - ((APERTURE_NUMBER_OF_POINTS - 1) / 2d)) * pixelSize;
+        double yI = -((i + r.nextDouble() / (r.nextBoolean() ? 2 : -2)) - ((APERTURE_NUMBER_OF_POINTS - 1) / 2d)) * pixelSize;
+
+        if (xJ != 0) {
+            pIJ = pIJ.add(vRight.scale(xJ));
+        }
+        if (yI != 0) {
+            pIJ = pIJ.add(vUp.scale(yI));
+        }
+
+        Vector vIJ = focusPoint.subtract(pIJ);
+
+        return new Ray(pIJ, vIJ); // return a new ray from a pixel
+    }
+
+
+    }
+

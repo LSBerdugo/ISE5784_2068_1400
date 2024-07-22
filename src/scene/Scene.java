@@ -2,6 +2,7 @@ package scene;
 import geometries.Geometries;
 import lighting.AmbientLight;
 import lighting.LightSource;
+import lighting.PointLight;
 import primitives.Color;
 
 import java.util.LinkedList;
@@ -61,11 +62,22 @@ public class Scene {
     /**
      * Sets the light sources in the scene.
      *
-     * @param lights The list of light sources to set.
+     * @param lightSources The list of light sources to set.
      * @return This {@code Scene} object for chaining setters.
      */
-    public Scene setLights(List<LightSource> lights) {
-        this.lights = new LinkedList<>(lights);
+    public Scene setLights(List<LightSource> lightSources) {
+
+        double sum=0;
+        for(LightSource light:lightSources)
+        {
+            if(sum>1)
+                break;
+            if(light instanceof PointLight ) {
+                PointLight mylight = (PointLight) light;
+                sum += mylight.getkC() + mylight.getkQ() + mylight.getkL();
+            }
+            lights.add(light);
+        }
         return this;
     }
 }

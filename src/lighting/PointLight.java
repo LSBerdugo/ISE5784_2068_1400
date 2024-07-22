@@ -13,6 +13,22 @@ public class PointLight extends Light implements LightSource {
     private double kL = 0;
     private double kQ = 0;
 
+    public double getkC() {
+        return kC;
+    }
+
+    public double getkL() {
+        return kL;
+    }
+
+    public double getkQ() {
+        return kQ;
+    }
+
+    public Point getPosition() {
+        return position;
+    }
+
     /**
      * Constructs a {@code PointLight} with the specified color and position.
      *
