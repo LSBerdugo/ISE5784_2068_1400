@@ -35,6 +35,8 @@ public class Camera implements Cloneable {
     private double depthOfField;
     private double aperture;
     private boolean DofON=false;
+    private int ANTI_ALIASING_NUMBER_OF_RAYS = 1;
+    private boolean antiAliasing = false;
 
     /**
      * Returns the distance of the camera to the view plane.
@@ -83,7 +85,7 @@ public class Camera implements Cloneable {
         return depthOfField;
     }
     public int getApertureNumberOfPoints( ) {
-       return APERTURE_NUMBER_OF_POINTS;
+        return APERTURE_NUMBER_OF_POINTS;
     }
 
     /**
@@ -114,10 +116,10 @@ public class Camera implements Cloneable {
         imageWriter = null;
         rayTracer = null;
         location = Point.ZERO;
-         depthOfField=0;
-         DofON=false;
-         aperture=0;
-         APERTURE_NUMBER_OF_POINTS=9;
+        depthOfField=0;
+        DofON=false;
+        aperture=0;
+        APERTURE_NUMBER_OF_POINTS=9;
     }
 
 
@@ -232,6 +234,15 @@ public class Camera implements Cloneable {
             return this;
 
         }
+        public Builder setAntiAliasing(boolean antiAliasing) {
+            camera.antiAliasing = antiAliasing;
+            return this;
+        }
+
+        public Builder setAntiAliasingNumberOfRays(int numberOfRays) {
+            camera.ANTI_ALIASING_NUMBER_OF_RAYS = numberOfRays;
+            return this;
+        }
         /**
          * Builds the {@link Camera} instance.
          *
@@ -247,10 +258,10 @@ public class Camera implements Cloneable {
                 throw new MissingResourceException("Missing rendering data","Camera","width");
             if (camera.height == 0)
                 throw new MissingResourceException("Missing rendering data","Camera","height");
-           if (camera.rayTracer == null)
-              throw new MissingResourceException("Missing rendering data","Camera","rayTracer");
-           if (camera.imageWriter == null)
-              throw new MissingResourceException("Missing rendering data","Camera","imageWriter");
+            if (camera.rayTracer == null)
+                throw new MissingResourceException("Missing rendering data","Camera","rayTracer");
+            if (camera.imageWriter == null)
+                throw new MissingResourceException("Missing rendering data","Camera","imageWriter");
             if (camera.distance <= 0)
                 throw new MissingResourceException("Missing rendering data","Camera","distance");
             if (camera.location == null)
@@ -286,8 +297,8 @@ public class Camera implements Cloneable {
         Point pC = location.add(vTo.scale(distance));
 
         // Calculate the size of each pixel in the view plane
-            double rX =(width / (double)nX);
-            double rY = (height / (double)nY);
+        double rX =(width / (double)nX);
+        double rY = (height / (double)nY);
 
         // Calculate the offset of the current pixel from the center
         double xJ = (j - (nX - 1) / 2d) * rX;
@@ -298,11 +309,11 @@ public class Camera implements Cloneable {
 
         // Adjust the intersection point based on the pixel offset
         if (!isZero(xJ)) {
-                pIJ = pIJ.add(vRight.scale(xJ));
-            }
-            if (!isZero(yI)) {
-                pIJ = pIJ.add(vUp.scale(yI));
-            }
+            pIJ = pIJ.add(vRight.scale(xJ));
+        }
+        if (!isZero(yI)) {
+            pIJ = pIJ.add(vUp.scale(yI));
+        }
 
         // Calculate the direction vector of the ray from the camera location to the pixel
         Vector vIJ = pIJ.subtract(location);
@@ -368,78 +379,114 @@ public class Camera implements Cloneable {
         imageWriter.writeToImage();
     }
 
+
     /**
      * Renders the image using the ray tracing algorithm.
      */
-    private void castRay(int nX, int nY, int j, int i)
-    {
-        // Construct a ray through the pixel
-        Ray ray = constructRay(nX, nY, j, i);
-        if(DofON)
-        {
-            List <Ray>MyRayList = constructRaysGridFromCamera(ray);
-            Color myColor=Color.BLACK;
-            for (Ray myray :MyRayList )
-            {
-                myColor=myColor.add(rayTracer.traceRay(myray));
+    private void castRay(int nX, int nY, int j, int i) {
+        if (antiAliasing) {
+            Color color = calcAveragePixelColor(nX, nY, j, i);
+            imageWriter.writePixel(j, i, color);
+        } else if (DofON) {
+            Ray ray = constructRay(nX, nY, j, i);
+            List<Ray> MyRayList = constructRayGridDOF(ray);
+            Color myColor = Color.BLACK;
+            for (Ray myray : MyRayList) {
+                myColor = myColor.add(rayTracer.traceRay(myray));
                 imageWriter.writePixel(j,i,myColor.reduce(MyRayList.size()));
             }
-        }
-        else
-        {
+
+        } else {
+            Ray ray = constructRay(nX, nY, j, i);
             Color color = rayTracer.traceRay(ray);
             imageWriter.writePixel(j, i, color);
-            }
-        // Write the color to the image
-
-
+        }
     }
 
-    private List<Ray> constructRaysGridFromCamera(Ray ray)
+    private Color calcAveragePixelColor(int nX, int nY, int j, int i) {
+        double pixelWidth = width / (double) nX;
+        double pixelHeight = height / (double) nY;
+        double pixelSize = Math.max(pixelWidth, pixelHeight) / ANTI_ALIASING_NUMBER_OF_RAYS;
+        // Calculate the offset of the pixel from the center of the view plane
+        double xOffset = (j - (nX - 1) / 2d) * pixelWidth + pixelWidth / 2d;
+        double yOffset = -(i - (nY - 1) / 2d) * pixelHeight - pixelHeight / 2d;
+
+        // Calculate the intersection point of the ray with the view plane
+        Point pC = location.add(vTo.scale(distance));
+        if(!isZero(xOffset)) pC = pC.add(vRight.scale(xOffset));
+        if(!isZero(yOffset)) pC = pC.add(vUp.scale(yOffset));
+
+
+        List<Ray> rays = generateRayGrid(pC, ANTI_ALIASING_NUMBER_OF_RAYS, pixelSize, false, null);
+
+        Color color = Color.BLACK;
+        for (Ray ray : rays) {
+            color = color.add(rayTracer.traceRay(ray));
+        }
+        return color.reduce(rays.size());
+    }
+
+
+
+    private List<Ray> constructRayGridDOF(Ray ray)
     {
-        List<Ray>MyRays=new LinkedList<>();
         double t0=depthOfField+distance;
         double t=t0/(vTo.dotProduct(ray.getDirection()));
         Point FocusPoint=ray.GetPoint(t);
         double PixelSize =alignZero((aperture*2)/APERTURE_NUMBER_OF_POINTS);
-        for(int i=0;i<APERTURE_NUMBER_OF_POINTS;i++)
-        {
-            for(int j=0;j<APERTURE_NUMBER_OF_POINTS;j++)
-            {
-                Ray tmpRay = constructRayFromPixel( j, i, PixelSize, FocusPoint);
-                // we check if each ray is in the circle of the camera
-                if (tmpRay.getHead().equals(location)) {// if the ray is from the camera center
-                    MyRays.add(tmpRay); // we add the ray to the list myRays
-                } else if (tmpRay.getHead().subtract(location).dotProduct(tmpRay.getHead().subtract(location)) <= aperture * aperture) {
-                    // if the distance with the center (squared) is <= the square of the radius -> the ray is in the circle of the camera
-                    MyRays.add(tmpRay); // we add the ray to the list myRays
+        return generateRayGrid(location, APERTURE_NUMBER_OF_POINTS, PixelSize, true, FocusPoint);
+    }
+
+    private List<Ray> generateRayGrid(Point center, int gridSize, double pixelSize, boolean isDOF, Point focusPoint) {
+        List<Ray> rays = new LinkedList<>();
+        Random r = new Random();
+
+        for (int i = 0; i < gridSize; i++) {
+            for (int j = 0; j < gridSize; j++) {
+                double xJ = ((j + r.nextDouble() / (r.nextBoolean() ? 2 : -2)) - ((gridSize - 1) / 2d)) * pixelSize;
+                double yI = -((i + r.nextDouble() / (r.nextBoolean() ? 2 : -2)) - ((gridSize - 1) / 2d)) * pixelSize;
+
+                Point pIJ = center;
+                if (!isZero(xJ)) {
+                    pIJ = pIJ.add(vRight.scale(xJ));
+                }
+                if (!isZero(yI)) {
+                    pIJ = pIJ.add(vUp.scale(yI));
+                }
+
+                Vector vIJ = isDOF ? focusPoint.subtract(pIJ) : pIJ.subtract(location);
+                Ray ray = new Ray(pIJ, vIJ);
+
+                if (!isDOF || pIJ.equals(location) ||
+                        pIJ.subtract(location).dotProduct(pIJ.subtract(location)) <= aperture * aperture) {
+                    rays.add(ray);
                 }
             }
         }
-        return MyRays;
+        return rays;
     }
+//
+//    private Ray constructRayFromPixel(int j, int i, int k, int l, double pixelWidth, double pixelHeight) {
+//        Point pC = location.add(vTo.scale(distance));
+//
+//        double xJ = (j - (imageWriter.getNx() - 1) / 2d) * pixelWidth;
+//        double yI = -(i - (imageWriter.getNy() - 1) / 2d) * pixelHeight;
+//
+//        double subPixelWidth = pixelWidth / ANTI_ALIASING_NUMBER_OF_RAYS;
+//        double subPixelHeight = pixelHeight / ANTI_ALIASING_NUMBER_OF_RAYS;
+//
+//        double xK = (k - (ANTI_ALIASING_NUMBER_OF_RAYS - 1) / 2d) * subPixelWidth;
+//        double yL = -(l - (ANTI_ALIASING_NUMBER_OF_RAYS - 1) / 2d) * subPixelHeight;
+//
+//        Point pIJ = pC;
+//        if (!isZero(xJ + xK)) pIJ = pIJ.add(vRight.scale(xJ + xK));
+//        if (!isZero(yI + yL)) pIJ = pIJ.add(vUp.scale(yI + yL));
+//
+//        Vector vIJ = pIJ.subtract(location);
+//
+//        return new Ray(location, vIJ);
+//    }
 
-    private Ray constructRayFromPixel(int j, int i, double pixelSize, Point focusPoint)
-    {
-        Point pIJ = location;
-
-        Random r = new Random(); // we want a random point for each pixel for more precision
-
-        double xJ = ((j + r.nextDouble() / (r.nextBoolean() ? 2 : -2)) - ((APERTURE_NUMBER_OF_POINTS - 1) / 2d)) * pixelSize;
-        double yI = -((i + r.nextDouble() / (r.nextBoolean() ? 2 : -2)) - ((APERTURE_NUMBER_OF_POINTS - 1) / 2d)) * pixelSize;
-
-        if (xJ != 0) {
-            pIJ = pIJ.add(vRight.scale(xJ));
-        }
-        if (yI != 0) {
-            pIJ = pIJ.add(vUp.scale(yI));
-        }
-
-        Vector vIJ = focusPoint.subtract(pIJ);
-
-        return new Ray(pIJ, vIJ); // return a new ray from a pixel
-    }
 
 
-    }
-
+}
