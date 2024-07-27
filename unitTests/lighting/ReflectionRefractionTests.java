@@ -139,22 +139,38 @@ public class ReflectionRefractionTests {
                 new Sphere(new Point(180, -140, 0), 30)
                         .setEmission(new Color(221, 199, 113)).
                         setMaterial(new Material().setKd(1d).setShininess(70)),
+                //the orange sphere
                 new Sphere(new Point(100, -50, -200), 20)
                         .setEmission(new Color(209, 77, 35)).
-                        setMaterial(new Material().setKd(1d).setShininess(70)),
+                        setMaterial(new Material().setKd(3d).setShininess(70)),
+                //the marron sphere
                 new Sphere(new Point(50, -20, -400), 25)
                         .setEmission(new Color(148, 85, 44)).
-                        setMaterial(new Material().setKd(1d).setShininess(70)),
-                new Sphere(new Point(5, -15, -600), 12)
+                        setMaterial(new Material().setKd(3d).setShininess(70)),
+                //the little sphere
+                new Sphere(new Point(3, -15, -600), 12)
                         .setEmission(new Color(158, 120, 57)).
-                        setMaterial(new Material().setKd(1d).setKt(0.3d).setShininess(70)),
+                        setMaterial(new Material().setKd(2d).setKr(0.1d).setShininess(70)),
 
                 new Tube(new Ray(new Point(450, -40, -300), new Vector(1, -0.2, 0)), 0.5).
                         setEmission(new Color(255, 255, 255)),
-
+//the big sphere
                 new Sphere(new Point(-300, -200, -500), 330)
                         .setEmission(new Color(237, 50, 2)).
-                        setMaterial(new Material().setKr(0.5d).setKd(1d).setShininess(70))
+                        setMaterial(new Material().setKr(0.5d).setKd(1d).setShininess(70)),
+                // Diamond shape using two triangles
+                new Triangle(
+                        new Point(110, -140, 500),  // Vertex 1 (bottom point)
+                        new Point(105, -130, 500),  // Vertex 2 (left point)
+                        new Point(115, -130, 500)   // Vertex 3 (right point)
+                ).setEmission(new Color(66, 72, 245)) // Dark blue color
+                        .setMaterial(new Material().setKd(2d).setShininess(70)),
+                new Triangle(
+                        new Point(110, -120, 500),  // Vertex 1 (top point)
+                        new Point(105, -130, 500),  // Vertex 2 (left point)
+                        new Point(115, -130, 500)   // Vertex 3 (right point)
+                ).setEmission(new Color(66, 72, 245)) // Dark blue color
+                        .setMaterial(new Material().setKd(2d).setShininess(70))
 //
 
         );
@@ -180,17 +196,87 @@ public class ReflectionRefractionTests {
                         .setKc(0.01)
 
         );
-        //the SpotLight of the bedge sphere between the yellow sphere the shadow.
+
+        //the PointLight  of the yellow sphere the point in the on.
         light.add(
 
-                new SpotLight(new Color(0, 97, 255), new Point(200, -150, 150), new Vector(-1, -1, -1))
-                        .setKl(0.001).setKq(0.0001)
+                new PointLight(new Color(168, 80, 50),  // White light
+                        new Point(180, -20, 95)) // Position of the point light
+                        .setKl(0.01)
+                        .setKq(0.0001)
+                        .setKc(0.01)
+
+        );
+        //the PointLight  of the yellow sphere the point in the bottom.
+        light.add(
+
+                new PointLight(new Color(168, 115, 50),  // White light
+                        new Point(30, -250, 10)) // Position of the point light
+                        .setKl(0.01)
+                        .setKq(0.000001)
+                        .setKc(0.5)
+
+        );
+        //the PointLight  of the yellow sphere the point in the bottom.
+        light.add(
+
+                new SpotLight(new Color(177, 126, 100),  // White light
+                        new Point(150, -80, 20),new Vector(0,-20,-120)) // Position of the point light
+                        .setKl(0.01)
+                        .setKq(0.000001)
+                        .setKc(2)
+
+        );
+//the spotlight in the orange sphere.
+        light.add(
+
+                new SpotLight(new Color(177, 126, 100),  // White light
+                        new Point(100, 0, -100),new Vector(10,-50,-100)) // Position of the point light
+                        .setKl(0.00001)
+                        .setKq(0.000001)
+                        .setKc(0.1)
+
+        );
+        //the spotlight in the marron sphere.
+        light.add(
+
+                new SpotLight(new Color(177, 126, 100),  // White light
+                        new Point(0, 0, -200),new Vector(50,-30,-200)) // Position of the point light
+                        .setKl(0.00001)
+                        .setKq(0.000001)
+                        .setKc(0.1)
+
+        );
+        //the spotlight in the little sphere.
+        light.add(
+
+                new SpotLight(new Color(177, 126, 100),  // White light
+                        new Point(0, 0, -600),new Vector(3,-15,0)) // Position of the point light
+                        .setKl(0.00001)
+                        .setKq(0.000001)
+                        .setKc(0.1)
+
+        );
+        //the spotlight in the little sphere.
+        light.add(
+
+                new SpotLight(new Color(177, 126, 100),  // White light
+                        new Point(0, 0, -600),new Vector(3,-15,0)) // Position of the point light
+                        .setKl(0.00001)
+                        .setKq(0.000001)
+                        .setKc(0.1)
 
         );
 
 
 
-       scene.setLights(light);
+
+
+
+
+
+
+        scene.setLights(light);
 
 
         scene.setAmbientLight(new AmbientLight(new Color(40, 0, 101), 0.2)).setBackground(new Color(16, 3, 27));
@@ -267,7 +353,7 @@ public class ReflectionRefractionTests {
                 .setImageWriter(new ImageWriter("depth_of_field_test", 500, 500))
                 .setAperture(2) // Large aperture for noticeable DoF effect
                 .setDepthOfField(500)
-                .setDofON(true)
+                .setDofON(false)
                 .build();
 
         // Create scene
