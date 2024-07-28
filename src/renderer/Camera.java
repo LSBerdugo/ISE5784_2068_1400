@@ -217,28 +217,69 @@ public class Camera implements Cloneable {
             return this;
         }
 
+        /**
+         * Sets the aperture of the camera.
+         *
+         * @param aperture the aperture to set.
+         * @return the builder instance.
+         * @throws IllegalArgumentException if the aperture is negative or zero.
+         */
         public Builder setAperture(double aperture) {
             camera.aperture = aperture;
             return this;
         }
+        /**
+         * Sets the depth of field of the camera.
+         *
+         * @param Def the depth of field to set.
+         * @return the builder instance.
+         * @throws IllegalArgumentException if the depth of field is negative or zero.
+         */
         public Builder setDepthOfField(double Def) {
             camera.depthOfField = Def;
             return this;
         }
+        /**
+         * Sets the depth of field of the camera to be true.
+         *
+         * @param DefOn the boolean field .
+         * @return the builder instance.
+         */
         public Builder setDofON(boolean DefOn) {
             camera.DofON = DefOn;
             return this;
         }
+
+        /**
+         * Sets the number of points in the aperture of the camera.
+         *
+         * @param numberOfPoints the number of points to set.
+         * @return the builder instance.
+         * @throws IllegalArgumentException if the number of points is negative or zero.
+         */
         public Builder setApertureNumberOfPoints(int numberOfPoints ) {
             camera.APERTURE_NUMBER_OF_POINTS=numberOfPoints;
             return this;
 
         }
+        /**
+         * Sets the boolean field  anti-aliasing to be true or false .
+         *
+         * @param antiAliasing the boolean value- true or false.
+         * @return the builder instance.
+         */
         public Builder setAntiAliasing(boolean antiAliasing) {
             camera.antiAliasing = antiAliasing;
             return this;
         }
 
+        /**
+         * Sets the number of rays for anti-aliasing.
+         *
+         * @param numberOfRays the number of rays to set.
+         * @return the builder instance.
+         * @throws IllegalArgumentException if the number of rays is negative or zero.
+         */
         public Builder setAntiAliasingNumberOfRays(int numberOfRays) {
             camera.ANTI_ALIASING_NUMBER_OF_RAYS = numberOfRays;
             return this;
