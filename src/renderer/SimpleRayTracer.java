@@ -231,8 +231,12 @@ public class SimpleRayTracer extends RayTracerBase {
      * @return the closest intersection point
      */
     private GeoPoint findClosestIntersection(Ray ray) {
-        List<GeoPoint> intersection = scene.geometries.findGeoIntersections(ray);
-        if (intersection == null)
+        List<GeoPoint> intersection ;
+        if(!(scene.BVHON))
+            intersection=scene.geometries.findGeoIntersections(ray);
+        else
+            intersection=scene.geometries.findIntersectBoundingRegion(ray,Double.POSITIVE_INFINITY);
+        if (intersection == null||intersection.size()==0)
             return null;
         return ray.findClosestGeoPoint(intersection);
 
@@ -284,10 +288,14 @@ public class SimpleRayTracer extends RayTracerBase {
         Ray lightRay = new Ray(gp.point, n, lightDirection); //build ray with delta
 
         double lightDistance = ls.getDistance(gp.point);
-        // var intersections = scene.geometries.findGeoIntersections(lightRay,lightDistance);
-        List<GeoPoint> intersections = scene.geometries.findGeoIntersections(lightRay, lightDistance);
+        List<GeoPoint> intersections;
+        if(!(scene.BVHON))
+            intersections=scene.geometries.findGeoIntersections(lightRay, lightDistance);
+        else
+            intersections=scene.geometries.findIntersectBoundingRegion(lightRay,lightDistance);
 
-        if (intersections == null) return Double3.ONE; //no intersections
+        if (intersections == null||intersections.size()==0)
+            return Double3.ONE; //no intersections
         Double3 ktr = Double3.ONE;
         for (GeoPoint geopoint : intersections) {
             ktr = ktr.product(geopoint.geometry.getMaterial().kT); //the more transparency the less shadow

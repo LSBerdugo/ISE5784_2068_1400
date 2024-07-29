@@ -48,6 +48,7 @@ public class Geometries extends Container {
      */
     public void add(Container... geometries) {
         containers.addAll(Arrays.asList(geometries));
+        setBoundingBox();
     }
 
     /**
@@ -67,8 +68,14 @@ public class Geometries extends Container {
      * @param geometries - shapes to be added to this instance
      */
     public void add(Intersectable... geometries) {
-        for(Intersectable geo: geometries)
-            containers.add((Container) geo);
+//        for (Intersectable geometry : geometries) {
+//
+//            this.geometries.add(geometry);
+//            this.setBoundingBox();
+//        }
+//        setBoundingBox();
+        this.geometries.addAll(Arrays.asList(geometries));
+        setBoundingBox();
 
     }
     /**
@@ -103,6 +110,39 @@ public class Geometries extends Container {
         }
         return null;
 
+    }
+    @Override
+    public void setBoundingBox() {
+        super.setBoundingBox();                 // first, create a default bounding region if necessary
+        for (Container geo : containers) {     // in a recursive call set bounding region for all the
+            geo.setBoundingBox();               // components and composites inside
+        }
+
+        double minX = Double.POSITIVE_INFINITY;
+        double minY = Double.POSITIVE_INFINITY;
+        double minZ = Double.POSITIVE_INFINITY;
+
+        double maxX = Double.NEGATIVE_INFINITY;
+        double maxY = Double.NEGATIVE_INFINITY;
+        double maxZ = Double.NEGATIVE_INFINITY;
+
+        for (Container inter : containers) {
+
+            // get minimal & maximal x value for the containing box
+            minX = Math.min(inter.boundingBox.getMinX(), minX);
+            maxX = Math.max(inter.boundingBox.getMaxX(), maxX);
+
+            // get minimal & maximal y value for the containing box
+            minY = Math.min(inter.boundingBox.getMinY(), minY);
+            maxY = Math.max(inter.boundingBox.getMaxY(), maxY);
+
+            // get minimal & maximal z value for the containing box
+            minZ = Math.min(inter.boundingBox.getMinZ(), minZ);
+            maxZ = Math.max(inter.boundingBox.getMaxZ(), maxZ);
+        }
+
+        // set the minimum and maximum values in 3 axes for this bounding region of the component
+        boundingBox.setBoundingBox(minX, maxX, minY, maxY, minZ, maxZ);
     }
 }
 

@@ -18,7 +18,7 @@ public class   ProjectTests {
     /**
      * Scene for the tests
      */
-    private final Scene scene = new Scene("Test scene");
+    private final Scene scene = new Scene("Test scene").setBVHON(false);
     /**
      * Camera builder for the tests with triangles
      */
@@ -291,7 +291,7 @@ public class   ProjectTests {
 
         scene.setLights(lights);
         scene.setAmbientLight(new AmbientLight(new Color(30, 30, 30), 0.1));
-        scene.setBackground(new Color(0, 0, 30));
+        scene.setBackground(new Color(255, 255, 255));
 
         // Camera setup
         Camera camera = Camera.getBuilder()
@@ -415,7 +415,33 @@ public class   ProjectTests {
         camera.renderImage();
         camera.writeToImage();
     }
+    @Test
+    public void time()
+    {
+        // Adding various geometric shapes to the scene
+        scene.geometries.add(
+                // Large background sphere
+                new Sphere(new Point(0, 0, -1000), 500)
+                        .setEmission(new Color(30, 30, 30))
+        );
+        Camera camera = Camera.getBuilder()
+                .setLocation(new Point(0, 0, 1000))
+                .setDirection(new Vector(0, 0, -1), new Vector(0, 1, 0))
+                .setVpDistance(1000)
+                .setVpSize(200, 200)
+                .setImageWriter(new ImageWriter("AntiAliasingTest", 500, 500))
+                .setRayTracer(new SimpleRayTracer(scene))
+                .setAntiAliasing(true)
+                .setAntiAliasingNumberOfRays(20)
+                .build();
 
+        // Render with anti-aliasing
+        camera.renderImage();
+        camera.writeToImage();
+
+    }
+
+    }
 
 
 }

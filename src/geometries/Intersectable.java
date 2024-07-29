@@ -145,7 +145,7 @@ public abstract class Intersectable {
      * @return a list of intersection points, or null if there are no intersections
      */
     public final List<GeoPoint> findGeoIntersections(Ray ray, double maxDistance, boolean bb) {
-        return findGeoIntersectionsHelper(ray, maxDistance, true); // change the bb to true for the bvh improvement
+        return findGeoIntersectionsHelper(ray, maxDistance, bb); // change the bb to true for the bvh improvement
     }
 
 

@@ -16,6 +16,7 @@ public class Scene {
     public AmbientLight ambientLight = AmbientLight.NONE;
     public Geometries geometries = new Geometries();
     public List<LightSource> lights = new LinkedList<>();
+    public boolean BVHON=false;
 
     /**
      * Constructs a {@code Scene} with the specified name.
@@ -80,4 +81,13 @@ public class Scene {
         }
         return this;
     }
+
+    public Scene setBVHON(boolean bvhon) {
+        this.BVHON = bvhon;
+        return this;
+    }
+    public boolean getBVHON() {
+        return this.BVHON;
+    }
+
 }
