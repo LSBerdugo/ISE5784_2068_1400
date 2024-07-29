@@ -415,7 +415,7 @@ class TubeTests {
     Ray ray1 = new Ray(rayOrigin1, rayDirection1);
     double maxDistance1 = 10.0;
 
-    List<Intersectable.GeoPoint> intersections1 = tube.findGeoIntersectionsHelper(ray1, maxDistance1);
+    List<Intersectable.GeoPoint> intersections1 = tube.findGeoIntersectionsHelper(ray1, maxDistance1,false);
 
     assertNotNull(intersections1, "Expected intersection points but found null");
     assertEquals(1, intersections1.size(), "Expected 1 intersection point");
@@ -435,7 +435,7 @@ class TubeTests {
 
 
 
-       List<Intersectable.GeoPoint> intersections2 = tube1.findGeoIntersectionsHelper(ray2, maxDistance2);
+       List<Intersectable.GeoPoint> intersections2 = tube1.findGeoIntersectionsHelper(ray2, maxDistance2,false);
        assertNotNull(intersections2, "Expected intersection points but found null");
        assertEquals(2, intersections2.size(), "Expected 2 intersection points");
 
@@ -449,7 +449,7 @@ class TubeTests {
         Ray ray = new Ray(rayOrigin, rayDirection);
         double maxDistance = 10.0;
 
-        List<Intersectable.GeoPoint> intersections = tube1.findGeoIntersectionsHelper(ray, maxDistance);
+        List<Intersectable.GeoPoint> intersections = tube1.findGeoIntersectionsHelper(ray, maxDistance,false);
         assertNull(intersections, "Expected no intersection points but found some");
     }
 
@@ -462,7 +462,7 @@ class TubeTests {
         Ray ray = new Ray(rayOrigin, rayDirection);
         double maxDistance = 10.0;
 
-        List<Intersectable.GeoPoint> intersections = tube1.findGeoIntersectionsHelper(ray, maxDistance);
+        List<Intersectable.GeoPoint> intersections = tube1.findGeoIntersectionsHelper(ray, maxDistance,false);
         assertNull(intersections, "Expected no intersection points but found some");
     }
 

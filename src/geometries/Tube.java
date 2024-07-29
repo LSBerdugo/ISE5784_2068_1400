@@ -90,7 +90,7 @@ public class Tube extends RadialGeometry {
 
 
      @Override
-    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance,boolean bb) {
         Vector vAxis = axis.getDirection();
         Vector v = ray.getDirection();
         Point p0 = ray.getHead();

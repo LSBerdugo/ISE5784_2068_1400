@@ -148,7 +148,7 @@ public class TriangleTests {
         Vector rayDirection = new Vector(-1, 0, 0);
         Ray ray = new Ray(rayOrigin, rayDirection);
         double maxDistance = 0.1;
-        assertNull(triangle1.findGeoIntersectionsHelper(ray, maxDistance), "Expected null but found intersection points");
+        assertNull(triangle1.findGeoIntersectionsHelper(ray, maxDistance,false), "Expected null but found intersection points");
     }
 
     @Test
@@ -158,7 +158,7 @@ public class TriangleTests {
         Vector rayDirection = new Vector(-1, 0, 0);
         Ray ray = new Ray(rayOrigin, rayDirection);
         double maxDistance = 3.0;
-        assertEquals(1, triangle1.findGeoIntersectionsHelper(ray, maxDistance).size(), "Expected 1 intersection point");
+        assertEquals(1, triangle1.findGeoIntersectionsHelper(ray, maxDistance,false).size(), "Expected 1 intersection point");
 
     }
 

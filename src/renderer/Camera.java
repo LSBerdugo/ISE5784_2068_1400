@@ -1,6 +1,5 @@
 package renderer;
 
-import geometries.Plane;
 import primitives.Color;
 import primitives.Point;
 import primitives.Ray;
@@ -35,8 +34,20 @@ public class Camera implements Cloneable {
     private double depthOfField;
     private double aperture;
     private boolean DofON=false;
+    //anti-aliasing properties
     private int ANTI_ALIASING_NUMBER_OF_RAYS = 1;
     private boolean antiAliasing = false;
+
+    //Multi-threading properties
+    /** Pixel manager for supporting:
+     * <ul>
+     * <li>multi-threading</li>
+     * <li>debug print of progress percentage in Console window/tab</li>
+     * <ul>
+     */
+    private PixelManager pixelManager;
+    private int threadsCount;
+    private double printInterval;
 
     /**
      * Returns the distance of the camera to the view plane.
@@ -120,6 +131,8 @@ public class Camera implements Cloneable {
         DofON=false;
         aperture=0;
         APERTURE_NUMBER_OF_POINTS=9;
+        threadsCount=1;
+        printInterval=0;
     }
 
 
@@ -217,6 +230,7 @@ public class Camera implements Cloneable {
             return this;
         }
 
+
         /**
          * Sets the aperture of the camera.
          *
@@ -284,6 +298,33 @@ public class Camera implements Cloneable {
             camera.ANTI_ALIASING_NUMBER_OF_RAYS = numberOfRays;
             return this;
         }
+
+
+        /**
+         * Sets the number of threads for multi-threading.
+         *
+         * @param n the number of threads to set.
+         * @return the builder instance.
+         * @throws IllegalArgumentException if the number of threads is negative or zero.
+         */
+        public Builder setMultiThreading(int n) {
+            camera.threadsCount = n;
+            return this;
+        }
+
+        /**
+         * Sets the print interval for multi-threading.
+         *
+         * @param k the print interval to set.
+         * @return the builder instance.
+         * @throws IllegalArgumentException if the print interval is negative or zero.
+         */
+        public Builder setDebugPrint(double k) {
+            camera.printInterval = k;
+            return this;
+        }
+
+
         /**
          * Builds the {@link Camera} instance.
          *
@@ -406,16 +447,40 @@ public class Camera implements Cloneable {
         // Check if the required fields are set
         if(rayTracer==null)
             throw new MissingResourceException("Missing rendering data","Camera","rayTracer");
-        // Loop through all the pixels in the view plane
-        for (int i = 0; i < imageWriter.getNy(); i++)
-        {
 
-            for (int j = 0; j < imageWriter.getNx(); j++)
+        final int nX = imageWriter.getNx();
+        final int nY = imageWriter.getNy();
+        pixelManager = new PixelManager(nY, nX, printInterval);
+        // Loop through all the pixels in the view plane
+        if(threadsCount==0)
+        {
+            for (int i = 0; i < nY; i++)
             {
-                // Cast a ray through the pixel
-                castRay(imageWriter.getNx(), imageWriter.getNy(), j, i);
+                for (int j = 0; j < nX; j++)
+                {
+                    // Cast a ray through the pixel
+                    castRay(nX, nY, j, i);
+                }
             }
         }
+        else
+        {
+            var threads = new LinkedList<Thread>(); // list of threads
+            while (threadsCount-- > 0) // add appropriate number of threads
+                threads.add(new Thread(() -> { // add a thread with its code
+                    PixelManager.Pixel pixel; // current pixel(row,col)
+                    // allocate pixel(row,col) in loop until there are no more pixels
+                    while ((pixel = pixelManager.nextPixel()) != null){
+
+                        // Cast a ray through the pixel
+                        castRay(nX, nY, pixel.col(), pixel.row());
+                        // System.out.println(pixel.col());
+                    }
+                }));
+            for (var thread : threads) thread.start();
+            try { for (var thread : threads) thread.join(); } catch (InterruptedException ignore) {}
+        }
+
         // Write the image to a file
         imageWriter.writeToImage();
     }
@@ -431,6 +496,10 @@ public class Camera implements Cloneable {
             Color color = calcAveragePixelColor(nX, nY, j, i);
             // Write the color to the image
             imageWriter.writePixel(j, i, color);
+            // Update the pixel manager
+            pixelManager.pixelDone();
+
+
             // Check if depth of field (DOF) is enabled
         } else if (DofON) {
             // Construct a grid of rays for depth of field (DOF) effects
@@ -442,6 +511,10 @@ public class Camera implements Cloneable {
                 myColor = myColor.add(rayTracer.traceRay(myray));
                 imageWriter.writePixel(j,i,myColor.reduce(MyRayList.size()));
             }
+            // Update the pixel manager
+            pixelManager.pixelDone();
+
+
             //else, trace a single ray through the pixel
         } else {
             Ray ray = constructRay(nX, nY, j, i);

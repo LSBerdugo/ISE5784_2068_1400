@@ -344,4 +344,78 @@ public class   ProjectTests {
         return plane;
     }
 
+
+    @Test
+    public void AntiAliasingTestSceneMT() {
+
+        // Adding various geometric shapes to the scene
+        scene.geometries.add(
+                // Large background sphere
+                new Sphere(new Point(0, 0, -1000), 500)
+                        .setEmission(new Color(30, 30, 30))
+                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setShininess(30)),
+
+                // Smaller spheres
+                new Sphere(new Point(50, 50, -300), 30)
+                        .setEmission(new Color(255, 0, 0))
+                        .setMaterial(new Material().setKd(0.4).setKs(0.6).setShininess(30)),
+                new Sphere(new Point(-50, -50, -300), 30)
+                        .setEmission(new Color(0, 255, 0))
+                        .setMaterial(new Material().setKd(0.4).setKs(0.6).setShininess(30)),
+                new Sphere(new Point(50, -50, -300), 30)
+                        .setEmission(new Color(0, 0, 255))
+                        .setMaterial(new Material().setKd(0.4).setKs(0.6).setShininess(30)),
+                new Sphere(new Point(-50, 50, -300), 30)
+                        .setEmission(new Color(255, 255, 0))
+                        .setMaterial(new Material().setKd(0.4).setKs(0.6).setShininess(30)),
+
+                // Tubes
+                new Tube(new Ray(new Point(100, 100, -500), new Vector(0, 0, -1)), 10)
+                        .setEmission(new Color(255, 215, 0))
+                        .setMaterial(new Material().setKd(0.4).setKs(0.6).setShininess(30)),
+                new Tube(new Ray(new Point(-100, -100, -500), new Vector(0, 0, -1)), 10)
+                        .setEmission(new Color(255, 105, 180))
+                        .setMaterial(new Material().setKd(0.4).setKs(0.6).setShininess(30)),
+
+                // Planes forming a checkered floor
+                createCheckerboardPlane(new Point(0, -100, -500), 200, 10),
+
+                // Triangles
+                new Triangle(new Point(-100, 100, -400), new Point(-50, 150, -400), new Point(0, 100, -400))
+                        .setEmission(new Color(128, 128, 128))
+                        .setMaterial(new Material().setKd(0.4).setKs(0.6).setShininess(30)),
+                new Triangle(new Point(100, -100, -400), new Point(50, -150, -400), new Point(0, -100, -400))
+                        .setEmission(new Color(64, 64, 64))
+                        .setMaterial(new Material().setKd(0.4).setKs(0.6).setShininess(30))
+        );
+
+        // Adding lights
+        List<LightSource> lights = new LinkedList<>();
+        lights.add(new DirectionalLight(new Color(255, 255, 255), new Vector(0, -1, -1)));
+        lights.add(new PointLight(new Color(255, 200, 150), new Point(-100, 100, 100))
+                .setKl(0.001).setKq(0.0001));
+
+        scene.setLights(lights);
+        scene.setAmbientLight(new AmbientLight(new Color(30, 30, 30), 0.1));
+        scene.setBackground(new Color(0, 0, 30));
+
+        // Camera setup
+        Camera camera = Camera.getBuilder()
+                .setLocation(new Point(0, 0, 1000))
+                .setDirection(new Vector(0, 0, -1), new Vector(0, 1, 0))
+                .setVpDistance(1000)
+                .setVpSize(200, 200)
+                .setImageWriter(new ImageWriter("AntiAliasingTest", 500, 500))
+                .setRayTracer(new SimpleRayTracer(scene))
+                .setAntiAliasing(true)
+                .setAntiAliasingNumberOfRays(20)
+                .build();
+
+        // Render with anti-aliasing
+        camera.renderImage();
+        camera.writeToImage();
+    }
+
+
+
 }

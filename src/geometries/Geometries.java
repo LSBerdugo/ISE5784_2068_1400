@@ -1,12 +1,8 @@
 package geometries;
 
-import primitives.Point;
 import primitives.Ray;
 
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,34 +11,66 @@ import java.util.List;
  * that can be intersected by a ray. It implements the Intersectable interface,
  * allowing it to be treated as a single intersectable object.
  */
-public class Geometries extends Intersectable {
+public class Geometries extends Container {
     private final List<Intersectable> geometries = new LinkedList<>();
+
+    /**
+     * containers - list of all components in the scene
+     */
+    private List<Container> containers = null;
+
 
     /**
      * Default constructor for creating an empty collection of geometries.
      */
     Geometries() {
+        containers = new LinkedList<>();
+        this.setBoundingBox();
     }
 
     /**
-     * Constructor that initializes the collection with one or more geometries.
+     * constructor of class, creats the list and for now it is empty.
+     * implements as a linked list that allows to delete members if necessary.
+     * after initializing, it adds shapes to the list, by using the add method.
      *
-     * @param geometries one or more geometries to be added to the collection
+     * @param geometries - shapes to be added to the constructed instance
      */
-    public Geometries(Intersectable... geometries) {
+    public Geometries(Container... geometries) {
+        containers = new LinkedList<>();
         add(geometries);
+        this.setBoundingBox();
     }
 
     /**
-     * Adds one or more geometries to the collection.
+     * a method that receive one or more shape and adds to this list.
      *
-     * @param geometries one or more geometries to be added to the collection
+     * @param geometries - shapes to be added to this instance
+     */
+    public void add(Container... geometries) {
+        containers.addAll(Arrays.asList(geometries));
+    }
+
+    /**
+     * remove method allow to remove (even zero) geometries from the composite class
+     *
+     * @param geometries which we want to add to the composite class
+     * @return the geometries after the remove
+     */
+    public Geometries remove(Container... geometries) {
+        containers.removeAll(Arrays.asList(geometries));
+        return this;
+    }
+
+    /**
+     * a method that receive shapes and adds to this list.
+     *
+     * @param geometries - shapes to be added to this instance
      */
     public void add(Intersectable... geometries) {
-        for (Intersectable x : geometries)
-            this.geometries.add(x);
-    }
+        for(Intersectable geo: geometries)
+            containers.add((Container) geo);
 
+    }
     /**
      * Finds all intersection points between the ray and the geometries in the collection.
      *
@@ -50,26 +78,30 @@ public class Geometries extends Intersectable {
      * @return a list of intersection points, or null if there are no intersections
      */
     @Override
-    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
-        List<GeoPoint> listGeo = null;
-        for (Intersectable x : geometries) {
-            List<GeoPoint> intersections = x.findGeoIntersections(ray);
-            if (intersections != null) {
-                if (listGeo == null) {
-                    listGeo = new LinkedList<>();
-                }
-                listGeo.addAll(intersections);
+    public List<Intersectable.GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance,boolean bb) {
+        List<Intersectable.GeoPoint> intersections =new LinkedList<>();
+        for (Container geometry : containers) {
+            // declare list as null
+            List<Intersectable.GeoPoint> geoIntersections = null;
+            // if we don't want to use bounding boxes, find intersections as usual
+            if (!bb || geometry.boundingBox == null) {
+                geoIntersections = geometry.findGeoIntersections(ray, maxDistance, false);
+            }
+            // but if we do want to use it, if the ray intersects the bounding box...
+            else if (geometry.boundingBox.intersectBV(ray)) {
+                geoIntersections = geometry.findGeoIntersections(ray, maxDistance, true);
+            }
+            // else - geoIntersections will stay null as defined earlier..
+
+
+            if (geoIntersections != null && geoIntersections.size() > 0) {
+                intersections.addAll(geoIntersections);
             }
         }
-
-        if(listGeo == null)
-            return null;
-        for (int i =listGeo.size() - 1; i >= 0; --i)
-        {
-            if (listGeo.get(i).point.distance(ray.getHead()) > maxDistance)
-                listGeo.remove(i);
+        if (intersections.size() > 0) {
+            return intersections;
         }
-        return listGeo.isEmpty() ? null :listGeo;
+        return null;
 
     }
 }

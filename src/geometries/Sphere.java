@@ -60,7 +60,7 @@ public class Sphere extends RadialGeometry {
      * @return a list of intersection points, or null if there are no intersections
      */
     @Override
-    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance,boolean bb) {
         // If the ray's head is at the center of the sphere, return the point on the surface in the direction of the ray
         if (ray.getHead().equals(center)){
             return List.of(new GeoPoint(this,ray.getDirection().scale(radius)));
@@ -108,6 +108,33 @@ public class Sphere extends RadialGeometry {
             return null;
         }
     }
+
+    /**
+     * Sets the bounding box for the sphere.
+     * The bounding box is a box that contains the sphere.
+     * The box is defined by the minimal and maximal x, y, and z values of the sphere.
+     */
+    @Override
+    public void setBoundingBox() {
+
+        super.setBoundingBox();
+
+        // get minimal & maximal x value for the containing box
+        double minX = center.getX() - radius;
+        double maxX = center.getX() + radius;
+
+        // get minimal & maximal y value for the containing box
+        double minY = center.getY() - radius;
+        double maxY = center.getY() + radius;
+
+        // get minimal & maximal z value for the containing box
+        double minZ = center.getZ() - radius;
+        double maxZ = center.getZ() + radius;
+
+        // set the minimum and maximum values in 3 axes for this bounding region of the component
+        boundingBox.setBoundingBox(minX, maxX, minY, maxY, minZ, maxZ);
+    }
+
 
 
 }

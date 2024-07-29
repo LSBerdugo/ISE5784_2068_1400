@@ -111,7 +111,7 @@ public class Polygon extends Geometry {
      * @return a list of intersection points, or null if there are no intersections
      */
     @Override
-    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance){
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance, boolean bb) {
 
         try {
             List<Point> planeIntersections = plane.findIntersections(ray);
@@ -146,6 +146,41 @@ public class Polygon extends Geometry {
         catch(IllegalArgumentException e){
             return null;
         }
+    }
+
+
+  /**
+     * method sets the values of the bounding volume of the intersectable component
+     * this implementation is for constructing new bounding box if necessary/needed
+     */
+    @Override
+    public void setBoundingBox() {
+        super.setBoundingBox();
+
+        double minX = Double.POSITIVE_INFINITY;
+        double minY = Double.POSITIVE_INFINITY;
+        double minZ = Double.POSITIVE_INFINITY;
+
+        double maxX = Double.NEGATIVE_INFINITY;
+        double maxY = Double.NEGATIVE_INFINITY;
+        double maxZ = Double.NEGATIVE_INFINITY;
+
+        for (Point vertex : vertices) {
+            // get minimal & maximal x value for the containing box
+            minX = Math.min(vertex.getX(), minX);
+            maxX = Math.max(vertex.getX(), maxX);
+
+            // get minimal & maximal y value for the containing box
+            minY = Math.min(vertex.getY(), minY);
+            maxY = Math.max(vertex.getY(), maxY);
+
+            // get minimal & maximal z value for the containing box
+            minZ = Math.min(vertex.getZ(), minZ);
+            maxZ = Math.max(vertex.getZ(), maxZ);
+        }
+
+        // set the minimum and maximum values in 3 axes for this bounding region of the component
+        boundingBox.setBoundingBox(minX, maxX, minY, maxY, minZ, maxZ);
     }
 
 

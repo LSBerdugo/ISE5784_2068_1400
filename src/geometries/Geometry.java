@@ -8,7 +8,7 @@ import primitives.Vector;
  * can be intersected by a ray and has a normal vector at any given point on its surface.
  * It extends the Intersectable interface, inheriting the ability to find intersections with a ray.
  */
-public  abstract class Geometry extends Intersectable {
+public  abstract class Geometry extends Container {
 
     /** The emission color of the geometry */
     protected Color emission= Color.BLACK;

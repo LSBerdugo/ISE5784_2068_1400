@@ -4,8 +4,6 @@ import primitives.Point;
 import primitives.Ray;
 
 import java.util.List;
-
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -92,7 +90,7 @@ public abstract class Intersectable {
      */
     public List<GeoPoint> findGeoIntersections(Ray ray)
     {
-        return findGeoIntersectionsHelper(ray, Double.POSITIVE_INFINITY);
+        return findGeoIntersectionsHelper(ray, Double.POSITIVE_INFINITY,false);
     }
 
 
@@ -114,8 +112,30 @@ public abstract class Intersectable {
      */
     public final List<GeoPoint> findGeoIntersections(Ray ray, double maxDistance)
     {
-       return findGeoIntersectionsHelper(ray,maxDistance);
+        return findGeoIntersectionsHelper(ray,maxDistance,true);
     }
+
+//    /**
+//     * Finds all intersection points between the ray and the intersectable object.
+//     *
+//     * @param ray the ray to intersect with the object
+//     * @param maxDistance the maximum distance from the ray's starting point to consider
+//     * @return a list of intersection points, or null if there are no intersections
+//     */
+//    protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance);
+
+
+
+    /**
+     * Finds all intersection points between the ray and the intersectable object.
+     *
+     * @param ray the ray to intersect with the object
+     * @param maxDistance the maximum distance from the ray's starting point to consider
+     * @param bb whether to use the bounding box optimization
+     * @return a list of intersection points, or null if there are no intersections
+     */
+    protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance, boolean bb) ;
+
 
     /**
      * Finds all intersection points between the ray and the intersectable object.
@@ -124,10 +144,9 @@ public abstract class Intersectable {
      * @param maxDistance the maximum distance from the ray's starting point to consider
      * @return a list of intersection points, or null if there are no intersections
      */
-    protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance);
-
-
-
+    public final List<GeoPoint> findGeoIntersections(Ray ray, double maxDistance, boolean bb) {
+        return findGeoIntersectionsHelper(ray, maxDistance, true); // change the bb to true for the bvh improvement
+    }
 
 
 

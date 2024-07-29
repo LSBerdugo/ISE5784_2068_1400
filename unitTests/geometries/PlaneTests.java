@@ -272,7 +272,7 @@ public class PlaneTests {
 
 
         Ray r=new Ray(new Point(2,-1,1),new Vector(0,5,-1));
-        var result = plane.findGeoIntersectionsHelper(r,5);
+        var result = plane.findGeoIntersectionsHelper(r,5,false);
         assertNull(result,"ERROR:Ray intersects the plane but the distance is bigger than maxdistance");
     }
 
@@ -281,7 +281,7 @@ public class PlaneTests {
     {
         //test when maxdistance is 5, and there is 1 intersection and distance is smaller than 5
         Ray r=new Ray(new Point(2,-1,1),new Vector(0,5,-1));
-        var result = plane.findGeoIntersectionsHelper(r,10);
+        var result = plane.findGeoIntersectionsHelper(r,10,false);
         assertEquals(1,result.size(),"ERROR:Ray intersects the plane and the distance is smaller than maxdistance");
     }
 

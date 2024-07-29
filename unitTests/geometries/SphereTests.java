@@ -195,7 +195,7 @@ class SphereTests {
 
 
         Ray r=new Ray(new Point(-1,0,0),new Vector(3,0,0));
-        final var result = sphere.findGeoIntersectionsHelper(r,5).stream().toList();
+        final var result = sphere.findGeoIntersectionsHelper(r,5,false).stream().toList();
         assertEquals(2,result.size(),"ERROR:Ray intersects the sphere in two points");
     }
 
@@ -205,7 +205,7 @@ class SphereTests {
     {
         //test geointersectionhelper when there is 1 intersections with maxdistance 5
         Ray r=new Ray(new Point(-1,0,0),new Vector(3,0,0));
-        final var result = sphere.findGeoIntersectionsHelper(r,1).stream().toList();
+        final var result = sphere.findGeoIntersectionsHelper(r,1,false).stream().toList();
         assertEquals(1,result.size(),"ERROR:Ray intersects the sphere in one point");
     }
 
@@ -214,7 +214,7 @@ class SphereTests {
     {
         //test geointersectionhelper when there is 0 intersections with maxdistance 5
         Ray r=new Ray(new Point(-1,0,0),new Vector(3,0,0));
-        final var result = sphere.findGeoIntersectionsHelper(r,0);
+        final var result = sphere.findGeoIntersectionsHelper(r,0,false);
         assertNull(result,"ERROR:Ray does not intersects the sphere");
     }
 
