@@ -112,7 +112,7 @@ public abstract class Intersectable {
      */
     public final List<GeoPoint> findGeoIntersections(Ray ray, double maxDistance)
     {
-        return findGeoIntersectionsHelper(ray,maxDistance,true);
+        return findGeoIntersectionsHelper(ray,maxDistance,false);
     }
 
 //    /**

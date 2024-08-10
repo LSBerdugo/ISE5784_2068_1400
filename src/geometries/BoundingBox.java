@@ -1,5 +1,5 @@
 
-package renderer;
+package geometries;
 
 import primitives.Point;
 import primitives.Ray;

@@ -50,6 +50,9 @@ public class Sphere extends RadialGeometry {
     }
 
 
+    public Point getCenter() {
+        return center;
+    }
 
     /**
      * Finds all intersection points between the given ray and this sphere.

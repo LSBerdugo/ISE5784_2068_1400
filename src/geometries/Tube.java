@@ -171,4 +171,45 @@ public class Tube extends RadialGeometry {
 
         return null;
     }
+
+
+    @Override
+    public void setBoundingBox()
+    {
+        Point p0 = axis.getHead();
+        Vector v = axis.getDirection();
+        double radius = this.radius; // Use the radius from RadialGeometry
+
+        // Large value to simulate infinity
+        double largeValue = Double.MAX_VALUE;
+
+        // Compute the extent of the tube along its axis using large values
+        double minX, maxX, minY, maxY, minZ, maxZ;
+
+        if (v.getX() != 0) {
+            minX = -largeValue;
+            maxX = largeValue;
+        } else {
+            minX = p0.getX() - radius;
+            maxX = p0.getX() + radius;
+        }
+
+        if (v.getY() != 0) {
+            minY = -largeValue;
+            maxY = largeValue;
+        } else {
+            minY = p0.getY() - radius;
+            maxY = p0.getY() + radius;
+        }
+
+        if (v.getZ() != 0) {
+            minZ = -largeValue;
+            maxZ = largeValue;
+        } else {
+            minZ = p0.getZ() - radius;
+            maxZ = p0.getZ() + radius;
+        }
+
+        boundingBox.setBoundingBox(minX, maxX, minY, maxY, minZ, maxZ);
+    }
 }

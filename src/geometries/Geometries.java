@@ -144,5 +144,66 @@ public class Geometries extends Container {
         // set the minimum and maximum values in 3 axes for this bounding region of the component
         boundingBox.setBoundingBox(minX, maxX, minY, maxY, minZ, maxZ);
     }
+
+
+
+    /**
+     * method to build the BVH tree automatically
+     */
+    public void BuildBvhTree() {
+        this.flatten();
+
+        double distance;
+        Container bestGeometry1 = null;
+        Container bestGeometry2 = null;
+
+        while (containers.size() > 1) {
+            double best = Double.MAX_VALUE;
+            for (Container geometry1 : containers) {
+                for (Container geometry2 : containers) {
+                    distance = geometry1.boundingBox.BoundingBoxDistance(geometry2.boundingBox);
+                    if (!geometry1.equals(geometry2) && distance < best) {
+                        best = distance;
+                        bestGeometry1 = geometry1;
+                        bestGeometry2 = geometry2;
+                    }
+                }
+            }
+
+            if (bestGeometry1 != null && bestGeometry2 != null)
+                containers.add(new Geometries(bestGeometry1, bestGeometry2));
+
+            containers.remove(bestGeometry1);
+            containers.remove(bestGeometry2);
+        }
+    }
+
+    /**
+     * method to flatten the geometries list
+     */
+    public void flatten() {
+        Geometries new_geometries = new Geometries(containers.toArray(new Container[containers.size()]));
+        containers.clear();
+
+        flatten(new_geometries);
+    }
+
+    /**
+     * recursive func to flatten the geometries list (break the tree)
+     * receives a Geometries instance, flattens it and adds the shapes to this current instance
+     *
+     * @param new_geometries geometries
+     */
+    private void flatten(Geometries new_geometries) {
+        for (Container container : new_geometries.containers) {
+            if (container instanceof Geometry) {
+                containers.add(container);
+            }
+
+            else {
+                flatten((Geometries) container);
+            }
+        }
+    }
 }
 

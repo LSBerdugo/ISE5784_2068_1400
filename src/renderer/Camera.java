@@ -598,9 +598,7 @@ public class Camera implements Cloneable {
      */
     private List<Ray> generateRayGrid(Point center, int gridSize, double pixelSize, boolean isDOF, Point focusPoint) {
         List<Ray> rays = new LinkedList<>();
-
         Random r = new Random();
-
         for (int i = 0; i < gridSize; i++) {
             for (int j = 0; j < gridSize; j++) {
                 // Compute the offset for the current pixel in the grid
@@ -615,7 +613,6 @@ public class Camera implements Cloneable {
                 if (!isZero(yI)) {
                     pIJ = pIJ.add(vUp.scale(yI));
                 }
-
                 // Determine the direction of the ray based on DOF or anti-aliasing
                 Vector vIJ = isDOF ? focusPoint.subtract(pIJ) : pIJ.subtract(location);
                 Ray ray = new Ray(pIJ, vIJ);
