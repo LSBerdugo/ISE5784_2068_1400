@@ -3,6 +3,7 @@ package geometries;
 import primitives.Ray;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -148,19 +149,35 @@ public class Geometries extends Container {
 
 
     /**
-     * method to build the BVH tree automatically
+     * Method to build the BVH tree automatically.
      */
     public void BuildBvhTree() {
         this.flatten();
-
         double distance;
         Container bestGeometry1 = null;
         Container bestGeometry2 = null;
+        List<Container> tubes = new LinkedList<>();
 
+        // Use an iterator to safely remove tubes from the containers list
+        Iterator<Container> iterator = containers.iterator();
+        while (iterator.hasNext()) {
+            Container container = iterator.next();
+            if (container.boundingBox.getIsTube()) {
+                iterator.remove(); // Safely remove the tube from the containers list
+                tubes.add(container); // Add the tube to the tubes list
+            }
+        }
+
+        // While there are more than one container in the list
         while (containers.size() > 1) {
+            // Initialize the best distance to the maximum value
             double best = Double.MAX_VALUE;
+
+            // For each geometry in the list
             for (Container geometry1 : containers) {
+                // For each geometry in the list
                 for (Container geometry2 : containers) {
+                    // Calculate the distance between bounding boxes
                     distance = geometry1.boundingBox.BoundingBoxDistance(geometry2.boundingBox);
                     if (!geometry1.equals(geometry2) && distance < best) {
                         best = distance;
@@ -170,13 +187,18 @@ public class Geometries extends Container {
                 }
             }
 
-            if (bestGeometry1 != null && bestGeometry2 != null)
+            // If two geometries are found to merge, create a new geometry and add it to the containers list
+            if (bestGeometry1 != null && bestGeometry2 != null) {
                 containers.add(new Geometries(bestGeometry1, bestGeometry2));
-
-            containers.remove(bestGeometry1);
-            containers.remove(bestGeometry2);
+                containers.remove(bestGeometry1);
+                containers.remove(bestGeometry2);
+            }
         }
+
+        // Re-add the tubes back to the containers list
+        containers.addAll(tubes);
     }
+
 
     /**
      * method to flatten the geometries list

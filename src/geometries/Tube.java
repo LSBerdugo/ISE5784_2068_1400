@@ -209,7 +209,7 @@ public class Tube extends RadialGeometry {
             minZ = p0.getZ() - radius;
             maxZ = p0.getZ() + radius;
         }
-
+        boundingBox.setIsTube(true);
         boundingBox.setBoundingBox(minX, maxX, minY, maxY, minZ, maxZ);
     }
 }

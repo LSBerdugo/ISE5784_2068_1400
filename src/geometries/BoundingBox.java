@@ -15,6 +15,7 @@ public class BoundingBox {
 
 
 
+    private boolean isTube=false;
     private double xMin = Double.POSITIVE_INFINITY;
 
     private double yMin = Double.POSITIVE_INFINITY;
@@ -28,6 +29,23 @@ public class BoundingBox {
     private double zMax = Double.NEGATIVE_INFINITY;
 
 
+    /**
+     * set the value of isTube
+     *
+     * @param isTube - the value of isTube
+     */
+    public void  setIsTube(boolean isTube){
+        this.isTube=isTube;
+    }
+
+    /**
+     * get the value of isTube
+     *
+     * @return the value of isTube
+     */
+    public boolean getIsTube(){
+        return isTube;
+    }
     /**
      * set the bounding box values
      *
