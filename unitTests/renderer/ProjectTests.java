@@ -888,7 +888,7 @@ public class   ProjectTests {
                 outerPlanets,
 
                 spaceTube,
-           way
+                way
 
         );
 
@@ -900,7 +900,7 @@ public class   ProjectTests {
                 .setKl(0.00001).setKq(0.000001).setKc(1));
         scene.lights.add(new SpotLight(new Color(100, 100, 100), new Point(50, 50, 50), new Vector(-1, -1, -3))
                 .setKl(0.00001).setKq(0.00001).setKc(1));
-scene.lights.add(structureLight);
+        scene.lights.add(structureLight);
         // Camera setup with depth of field
         Camera.Builder cameraBuilder = Camera.getBuilder()
                 .setLocation(new Point(0, 0, 300))
@@ -938,12 +938,12 @@ scene.lights.add(structureLight);
         }
     }
 
-        private Sphere createCelestialBody(Point center, double radius, Color color) {
-            Sphere body = new Sphere(center, radius);
-            body.setEmission(color);
-            body.setMaterial(new Material().setKd(0.5).setKs(0.5).setShininess(30));
-            return body;
-        }
+    private Sphere createCelestialBody(Point center, double radius, Color color) {
+        Sphere body = new Sphere(center, radius);
+        body.setEmission(color);
+        body.setMaterial(new Material().setKd(0.5).setKs(0.5).setShininess(30));
+        return body;
+    }
 
     private void addCelestialDebris(Geometries geometries) {
         Random rand = new Random();
@@ -971,24 +971,25 @@ scene.lights.add(structureLight);
 
         // Create the sun
         Sphere sun = new Sphere(new Point(0, 0, -1000), 80);
+        sun.getMaterial().setKd(0.1).setKr(0.2).setKs(0.2);
         sun.setEmission(new Color(255, 220, 0));
         scene.geometries.add(sun);
 
         // Lights for the sun
         scene.lights.add(
-                new SpotLight(new Color(255, 0, 0),  // Orange light
+                new SpotLight(new Color(255, 153, 0),  // Orange light
                         new Point(0, 100, -1000),  // Positioned to illuminate the sun from above
                         new Vector(0, -1, 0))    // Direction towards the sun
-                        .setKl(0.001)  // Attenuation factors
-                        .setKq(0.00001)
+                        .setKl(0.01)  // Attenuation factors
+                        .setKq(0.001)
                         .setKc(0.01)
         );
 
         scene.lights.add(
-                new PointLight(new Color(255, 0, 0),    // Red light
+                new PointLight(new Color(255, 153, 0),    // Red light
                         new Point(-300, 0, -950)) // Positioned to the side and slightly in front
-                        .setKl(0.01)  // Attenuation factors
-                        .setKq(0.0001)
+                        .setKl(0.1)  // Attenuation factors
+                        .setKq(0.001)
                         .setKc(0.01)
         );
 
@@ -1057,6 +1058,10 @@ scene.lights.add(structureLight);
         Tube spaceTube = new Tube(new Ray(new Point(-400, -350, -600), new Vector(1, 0.6, -0.1)), 5);
         spaceTube.setMaterial(new Material().setKd(0.7).setKs(0.3).setShininess(100).setKt(0.1));
         spaceTube.setEmission(new Color(100, 100, 100));
+        //add another tube
+        Tube spaceTube2 = new Tube(new Ray(new Point(400, 300, 400), new Vector(1, -0.5, 2)), 3);
+        spaceTube2.setMaterial(new Material().setKd(0.7).setKs(0.3).setShininess(100).setKt(0.1));
+        spaceTube2.setEmission(new Color(100, 100, 100));
 
         scene.geometries.add(spaceTube);
 
